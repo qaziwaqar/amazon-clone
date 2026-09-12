@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ProductImage } from "@/components/product-image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
@@ -66,7 +66,7 @@ export default async function OrderDetailPage({
             {order.items.map((item) => (
               <li key={`${item.productId}-${item.variant ?? ""}`} className="flex gap-4">
                 <Link href={`/dp/${item.slug}`} className="relative h-20 w-20 shrink-0">
-                  <Image src={item.image} alt={item.title} fill sizes="80px" className="object-contain" />
+                  <ProductImage src={item.image} alt={item.title} sizes="80px" className="object-contain" />
                 </Link>
                 <div className="min-w-0 flex-1">
                   <Link href={`/dp/${item.slug}`} className="line-clamp-2 text-sm text-link hover:underline">

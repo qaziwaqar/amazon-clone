@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ProductImage } from "@/components/product-image";
 import Link from "next/link";
 import type { Product } from "@/lib/data/types";
 
@@ -26,10 +26,9 @@ export function CategoryCard({
         {items.slice(0, 4).map(({ product, label }) => (
           <Link key={product.id} href={`/dp/${product.slug}`} className="group block">
             <div className="relative aspect-square w-full overflow-hidden bg-surface-sunken">
-              <Image
+              <ProductImage
                 src={product.images[0]}
                 alt={product.title}
-                fill
                 sizes="(max-width: 768px) 40vw, 160px"
                 className="object-cover"
               />
@@ -64,10 +63,9 @@ export function FeatureCard({
     <section className="flex h-full flex-col bg-surface p-5">
       <h2 className="mb-3 text-xl font-bold leading-tight">{title}</h2>
       <Link href={`/dp/${product.slug}`} className="relative block flex-1 overflow-hidden bg-surface-sunken">
-        <Image
+        <ProductImage
           src={product.images[0]}
           alt={product.title}
-          fill
           sizes="(max-width: 768px) 90vw, 340px"
           className="object-cover"
         />

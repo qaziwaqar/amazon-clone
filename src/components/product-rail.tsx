@@ -1,7 +1,7 @@
 "use client";
 
+import { ProductImage } from "@/components/product-image";
 import { useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/data/types";
 import { ChevronIcon } from "./icons";
@@ -58,10 +58,9 @@ export function ProductRail({
                 className="w-[140px] shrink-0 sm:w-[160px]"
               >
                 <div className="relative aspect-square w-full overflow-hidden bg-surface-sunken">
-                  <Image
+                  <ProductImage
                     src={product.images[0]}
                     alt={product.title}
-                    fill
                     sizes="160px"
                     className="object-contain"
                   />

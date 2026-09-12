@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ProductImage } from "@/components/product-image";
 import Link from "next/link";
 import type { Product } from "@/lib/data/types";
 import { discountPercent } from "@/lib/queries/products";
@@ -22,10 +22,9 @@ export function ProductCard({
     <article className="flex h-full flex-col rounded bg-surface p-3">
       <Link href={`/dp/${product.slug}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden">
-          <Image
+          <ProductImage
             src={product.images[0]}
             alt={product.title}
-            fill
             sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 220px"
             className="object-contain transition-transform duration-200 hover:scale-105"
           />

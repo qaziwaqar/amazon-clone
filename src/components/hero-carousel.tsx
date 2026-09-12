@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ProductImage } from "@/components/product-image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronIcon } from "./icons";
@@ -53,10 +53,9 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
             aria-hidden={i !== index}
           >
             <div className="absolute inset-0" style={{ background: slide.tint }} />
-            <Image
+            <ProductImage
               src={slide.image}
               alt=""
-              fill
               priority={i === 0}
               sizes="100vw"
               className="object-cover opacity-45 mix-blend-luminosity"

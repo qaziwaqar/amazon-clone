@@ -90,11 +90,12 @@ that sleep after inactivity: a 50-second cold start makes the site look broken.
 | Route | What is there |
 |---|---|
 | `/` | Hero carousel, category tiles, deals, best-seller and browsing rails |
+| Header | "All" department drawer, delivery-location picker with optional GPS |
 | `/s` | Search with department, price, rating, brand and Prime facets; five sorts; pagination |
 | `/dp/[slug]` | Gallery with lens zoom, variants, buy box, specs, reviews with histogram, related items |
 | `/cart` | Quantity, remove, save for later, free-shipping progress |
 | `/signin`, `/signup` | Email + password, one-click demo login |
-| `/checkout` | Address, delivery speed, simulated payment, order review |
+| `/checkout` | Address, delivery speed, simulated payment, order review — no field is pre-filled |
 | `/orders`, `/orders/[id]` | Order history, delivery progress, buy again |
 | `/account` | Account hub |
 
@@ -110,15 +111,19 @@ Stated plainly rather than buried:
 - **Catalogue data is generated, not scraped.** Titles, brands, specs and prices are
   built from per-department vocabularies. Reviews are generated with a realistic
   J-shaped rating distribution.
-- **Product images are seeded placeholders** from `picsum.photos`, deterministic per
-  product. They are not real product photography. Guessing at a retailer's CDN paths
-  produces broken images, which look worse than honest placeholders.
+- **Product images are keyword-matched stock photos** from `loremflickr.com` — a hair
+  dryer listing pulls hair-dryer photography, a tent pulls tents. Each slot is pinned
+  with a `lock` seed so the catalogue looks identical on every machine and across
+  deploys. They are stand-ins, not real product photography. If the host is unreachable
+  the page renders a generated tile from the product title rather than a broken image.
 - **Payment is simulated.** The card number is Luhn-checked for typos and discarded.
   Nothing is charged, stored or transmitted.
 - **Accounts live in server memory.** Sign-up works and signs you in immediately, but
   accounts do not survive a restart. The demo account is always present.
 - **Cart and orders live in httpOnly cookies.** They survive reloads and redeploys.
   Orders are capped at the six most recent.
+- **Checkout pre-fills nothing**, including the card field. Any Luhn-valid test number
+  works, for example 4242 4242 4242 4242.
 
 ### Deliberately not built
 
@@ -128,7 +133,23 @@ reviews, returns and refunds, carrier tracking.
 
 ---
 
-## 6. Upgrading to Postgres
+## 6. Delivery location and GPS
+
+The "Deliver to" control in the header opens a picker with two ways to set a location:
+
+- **Use my current location** — asks the browser for permission on click, never on page
+  load. Coordinates are resolved to a place name *in the browser* via BigDataCloud's
+  keyless reverse-geocode endpoint, and only that name and postal code are sent to the
+  server. Latitude and longitude never reach the server or its logs.
+- **Enter a ZIP code** — the fallback, and what is offered if permission is denied, the
+  lookup fails, or the browser has no geolocation.
+
+The choice is stored in an httpOnly cookie for 180 days. No API key, no account.
+
+Geolocation requires a secure context: it works on `localhost` and on any HTTPS
+deployment, and is unavailable over plain HTTP on a remote host.
+
+## 7. Upgrading to Postgres
 
 The UI never touches the dataset directly. Everything goes through `src/lib/queries/*`,
 which is the seam:
@@ -143,7 +164,7 @@ matching what a Postgres `tsvector` would do, so result ordering stays stable.
 
 ---
 
-## 7. Repository layout
+## 8. Repository layout
 
 ```
 src/app/          routes, server actions, middleware

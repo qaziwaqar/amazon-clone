@@ -73,6 +73,18 @@ Recorded, not built. Promoted only by a human.
 
 - **Drizzle + Neon adapter.** The query layer is already the seam. Swap `src/lib/data/`
   for SQL without touching a component.
-- **Mobile hamburger drawer.** The scrollable department strip covers the same need.
-- **Product photography.** Catalogue images are seeded placeholders, stated plainly in
-  the README rather than passed off as real product shots.
+- **Product photography.** Catalogue images are keyword-matched stock photos, stated
+  plainly in the README rather than passed off as real product shots.
+
+## Reported-issue pass — 2026-09-12
+
+Five issues raised after a real run-through. All fixed and verified against a running
+server, not against the markup.
+
+| # | Issue | Root cause | Fix |
+|---|---|---|---|
+| 1 | Checkout fields pre-filled, card included | `defaultValue` on every field | All removed; placeholders only, test-card hint in the payment callout |
+| 2 | Place Order disabled, nothing happened | Button sat outside the form and disabled itself synchronously in its own click handler, which cancels the submission | Summary and button moved inside the form; `useFormStatus` drives pending. Verified end to end: 303 to the confirmation page, cart cleared, thank-you rendered |
+| 3 | "All" button inert, no drawer | Never built — deferred in Phase 03 | Slide-in panel, Escape and backdrop close, scroll lock |
+| 4 | Images did not match products | `picsum.photos` returns random photography | Keyword-matched `loremflickr` tags per product type, pinned per slot; generated tile as fallback when the host fails |
+| 5 | Delivery address not clickable | Static label | Picker with opt-in GPS, browser-side reverse geocoding, ZIP fallback |

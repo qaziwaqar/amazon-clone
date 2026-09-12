@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ProductImage } from "@/components/product-image";
 import { useState } from "react";
 
 /**
@@ -27,7 +27,7 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
               i === active ? "border-link ring-1 ring-link" : "border-line"
             }`}
           >
-            <Image src={src} alt="" fill sizes="48px" className="object-cover" />
+            <ProductImage src={src} alt="" sizes="48px" className="object-cover" />
           </button>
         ))}
       </div>
@@ -43,10 +43,9 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
         }}
         onMouseLeave={() => setLens(null)}
       >
-        <Image
+        <ProductImage
           src={images[active]}
           alt={title}
-          fill
           priority
           sizes="(max-width: 1024px) 100vw, 500px"
           className="object-contain transition-transform duration-150"

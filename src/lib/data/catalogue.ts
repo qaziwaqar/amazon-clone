@@ -15,6 +15,8 @@ export const DEPARTMENTS: Department[] = [
 
 type TypeSpec = {
   noun: string;
+  /** loremflickr tag(s). Keyword-matched photography beats random stock by a mile. */
+  img: string;
   price: [number, number];
   specs: Record<string, readonly string[]>;
   bullets: readonly string[];
@@ -45,6 +47,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
     types: [
       {
         noun: "Over-Ear Headphones",
+        img: "headphones",
         price: [5999, 39999],
         specs: {
           "Battery Life": ["30 hours", "40 hours", "50 hours"],
@@ -60,6 +63,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Wireless Earbuds",
+        img: "earbuds",
         price: [2999, 24999],
         specs: {
           "Battery Life": ["6 hours (24 with case)", "8 hours (32 with case)"],
@@ -75,6 +79,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Smart Speaker",
+        img: "speaker",
         price: [3499, 19999],
         specs: {
           Output: ["20 W", "40 W", "60 W"],
@@ -89,6 +94,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Mirrorless Camera",
+        img: "camera",
         price: [49999, 189999],
         specs: {
           Sensor: ["24.2 MP APS-C", "33 MP full frame"],
@@ -103,6 +109,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Soundbar",
+        img: "soundbar",
         price: [12999, 79999],
         specs: {
           Channels: ["3.1", "5.1.2", "7.1.4"],
@@ -123,6 +130,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
     types: [
       {
         noun: "Laptop",
+        img: "laptop",
         price: [54999, 249999],
         specs: {
           Processor: ["8-core, 3.4 GHz", "12-core, 4.1 GHz"],
@@ -139,6 +147,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Monitor",
+        img: "computer,monitor",
         price: [14999, 99999],
         specs: {
           Panel: ['27" IPS', '32" IPS', '34" ultrawide'],
@@ -153,6 +162,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Mechanical Keyboard",
+        img: "keyboard",
         price: [6999, 24999],
         specs: {
           Switches: ["Tactile brown", "Linear red", "Clicky blue"],
@@ -167,6 +177,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Portable SSD",
+        img: "harddrive",
         price: [7999, 39999],
         specs: {
           Capacity: ["1 TB", "2 TB", "4 TB"],
@@ -187,6 +198,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
     types: [
       {
         noun: "Pressure Cooker",
+        img: "cookingpot",
         price: [6999, 19999],
         specs: {
           Capacity: ["6 qt", "8 qt"],
@@ -201,6 +213,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Knife Set",
+        img: "kitchenknife",
         price: [4999, 29999],
         specs: {
           Pieces: ["5 piece", "8 piece", "12 piece"],
@@ -215,6 +228,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Espresso Machine",
+        img: "espressomachine",
         price: [19999, 89999],
         specs: {
           "Pump Pressure": ["15 bar", "9 bar rotary"],
@@ -229,6 +243,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Storage Container Set",
+        img: "foodcontainer",
         price: [2499, 8999],
         specs: {
           Pieces: ["10 piece", "24 piece"],
@@ -249,6 +264,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
     types: [
       {
         noun: "Designing Data-Intensive Systems",
+        img: "book",
         price: [1999, 6999],
         specs: {
           Format: ["Paperback", "Hardcover"],
@@ -263,6 +279,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "The Design of Everyday Interfaces",
+        img: "book,design",
         price: [1499, 4999],
         specs: {
           Format: ["Paperback", "Hardcover"],
@@ -277,6 +294,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Practical Machine Learning",
+        img: "book,library",
         price: [2499, 7999],
         specs: {
           Format: ["Paperback"],
@@ -297,6 +315,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
     types: [
       {
         noun: "Crewneck T-Shirt",
+        img: "tshirt",
         price: [1299, 4999],
         specs: {
           Material: ["100% organic cotton", "Cotton/modal blend"],
@@ -312,6 +331,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Insulated Jacket",
+        img: "jacket",
         price: [6999, 29999],
         specs: {
           Fill: ["650 fill down", "Synthetic PrimaLoft"],
@@ -327,6 +347,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Running Shoes",
+        img: "sneakers",
         price: [5999, 17999],
         specs: {
           Drop: ["6 mm", "8 mm", "10 mm"],
@@ -348,6 +369,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
     types: [
       {
         noun: "Adjustable Dumbbell Set",
+        img: "dumbbell",
         price: [14999, 59999],
         specs: {
           Range: ["5-52.5 lb per hand", "10-90 lb per hand"],
@@ -362,6 +384,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Two-Person Tent",
+        img: "tent",
         price: [9999, 44999],
         specs: {
           "Packed Weight": ["2.1 kg", "2.8 kg"],
@@ -376,6 +399,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Massage Gun",
+        img: "massage",
         price: [7999, 29999],
         specs: {
           Amplitude: ["12 mm", "16 mm"],
@@ -396,6 +420,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
     types: [
       {
         noun: "Vitamin C Serum",
+        img: "serum,cosmetics",
         price: [1899, 8999],
         specs: {
           Concentration: ["10% L-ascorbic acid", "15% L-ascorbic acid"],
@@ -410,6 +435,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Hair Dryer",
+        img: "hairdryer",
         price: [4999, 34999],
         specs: {
           Motor: ["Brushless digital", "AC motor"],
@@ -424,6 +450,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Moisturiser",
+        img: "skincare,cream",
         price: [1299, 5999],
         specs: {
           "Skin Type": ["All skin types", "Dry to very dry"],
@@ -444,6 +471,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
     types: [
       {
         noun: "Building Set",
+        img: "buildingblocks",
         price: [2999, 24999],
         specs: {
           Pieces: ["540 pieces", "1,180 pieces", "2,340 pieces"],
@@ -458,6 +486,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Strategy Board Game",
+        img: "boardgame",
         price: [2499, 8999],
         specs: {
           Players: ["1-4 players", "2-5 players"],
@@ -472,6 +501,7 @@ const CATALOGUE_SPEC: Record<string, DeptSpec> = {
       },
       {
         noun: "Jigsaw Puzzle",
+        img: "jigsaw",
         price: [1499, 3999],
         specs: {
           Pieces: ["1000 pieces", "1500 pieces"],
@@ -514,10 +544,18 @@ const REVIEW_NEG = [
   ["Smaller than expected", "Read the dimensions properly, unlike me. That is on me, but worth repeating."],
 ];
 
-function imagesFor(id: string, count: number): string[] {
+/**
+ * Catalogue imagery.
+ *
+ * Keyword-matched rather than random: a hair dryer listing showing a photo of a
+ * building is worse than no photo at all. `lock` pins one specific image per slot, so
+ * the catalogue looks identical on every machine and across deploys.
+ */
+function imagesFor(id: string, count: number, keyword: string, seed: number): string[] {
   return Array.from(
     { length: count },
-    (_, i) => `https://picsum.photos/seed/${id}-${i}/700/700`,
+    (_, i) =>
+      `https://loremflickr.com/700/700/${keyword}?lock=${(seed + i * 7919) % 100000}`,
   );
 }
 
@@ -608,7 +646,7 @@ function buildCatalogue(): Product[] {
         reviewCount: intBetween(next, 12, 8400),
         prime: next() > 0.22,
         stock: next() < 0.06 ? 0 : intBetween(next, 1, 240),
-        images: imagesFor(id, intBetween(next, 3, 5)),
+        images: imagesFor(id, intBetween(next, 3, 5), type.img, hash(id)),
         bullets: [...type.bullets],
         description: `${title}. ${type.bullets[0]}. Sold and shipped by ${brand}, with free returns within 30 days.`,
         specs,

@@ -42,10 +42,11 @@ autocomplete (Phase 05 stretch).
 - ~~Cart badge stubbed at 0.~~ **Resolved.** `src/lib/cart.ts` now reads the real
   cookie-backed cart, so the badge is accurate on first paint. The stub violated the
   no-placeholder rule added to `LOOP.md` and was removed with it.
-- **Hamburger drawer not built.** The mobile search already sits on its own row, which
-  was the part that made 375px unusable. The "All" button in the department strip is
-  present but inert. Picked up in Phase 11 if it still matters; a horizontally
-  scrollable strip covers the same need at a fraction of the cost.
+- ~~Hamburger drawer not built.~~ **Resolved.** The inert "All" button was reported as
+  broken, which it was — an inert control is a bug under the no-placeholder rule, not a
+  deferral. It now opens a slide-in panel with departments and account links, closes on
+  Escape or backdrop click, and locks body scroll while open.
+- The static "Deliver to Seattle" label is now a real picker with optional GPS.
 - **Not visually verified.** No browser tool in this session, so responsive behaviour
   is reasoned from the markup, not observed. Confirm at 375/768/1440 once the app is
   deployed, before Phase 11 signs it off.

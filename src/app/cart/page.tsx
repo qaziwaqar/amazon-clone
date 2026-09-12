@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ProductImage } from "@/components/product-image";
 import Link from "next/link";
 import { getCart } from "@/lib/cart";
 import { formatPrice } from "@/lib/utils";
@@ -41,10 +41,9 @@ export default async function CartPage() {
                     href={`/dp/${line.product.slug}`}
                     className="relative h-28 w-28 shrink-0 sm:h-36 sm:w-36"
                   >
-                    <Image
+                    <ProductImage
                       src={line.product.images[0]}
                       alt={line.product.title}
-                      fill
                       sizes="144px"
                       className="object-contain"
                     />
@@ -139,10 +138,9 @@ export default async function CartPage() {
             {cart.saved.map((line) => (
               <li key={`${line.productId}-${line.variant ?? ""}`}>
                 <Link href={`/dp/${line.product.slug}`} className="relative block aspect-square">
-                  <Image
+                  <ProductImage
                     src={line.product.images[0]}
                     alt={line.product.title}
-                    fill
                     sizes="200px"
                     className="object-contain"
                   />

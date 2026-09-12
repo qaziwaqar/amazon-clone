@@ -4,7 +4,9 @@ import { getUser } from "@/lib/auth";
 import { Logo } from "./logo";
 import { SearchBar } from "./search-bar";
 import { DepartmentNav } from "./department-nav";
-import { CartIcon, PinIcon } from "./icons";
+import { CartIcon } from "./icons";
+import { LocationDialog } from "./location-dialog";
+import { getDeliveryLocation } from "@/lib/location";
 
 /**
  * Three-row header, matching the real structure: chrome row, department strip, and
@@ -15,7 +17,11 @@ import { CartIcon, PinIcon } from "./icons";
  * correct on first paint — no count flashing from 0 to 3 after hydration.
  */
 export async function Header({ query }: { query?: string }) {
-  const [cartCount, user] = await Promise.all([getCartCount(), getUser()]);
+  const [cartCount, user, location] = await Promise.all([
+    getCartCount(),
+    getUser(),
+    getDeliveryLocation(),
+  ]);
 
   return (
     <header className="sticky top-0 z-40">
@@ -23,16 +29,7 @@ export async function Header({ query }: { query?: string }) {
         <div className="mx-auto flex max-w-[1500px] items-center gap-1 px-2 py-1.5">
           <Logo />
 
-          <button
-            type="button"
-            className="hidden shrink-0 items-center gap-1 rounded-sm border border-transparent px-2 py-1.5 text-left hover:border-white lg:flex"
-          >
-            <PinIcon className="mt-2.5 h-4 w-4" />
-            <span className="leading-tight">
-              <span className="block text-xs text-white/70">Deliver to</span>
-              <span className="block text-sm font-bold">Seattle 98109</span>
-            </span>
-          </button>
+          <LocationDialog current={location} />
 
           <div className="mx-2 hidden flex-1 md:block">
             <SearchBar defaultQuery={query} />
