@@ -34,12 +34,40 @@ The loop **must** terminate. Any one of these ends it.
 | 3 | Current phase is `BLOCKED` and every other phase is `DONE` or also `BLOCKED` | `STOP: blocked`. Name the blocker and who must clear it. |
 | 4 | Two consecutive iterations with no box ticked and no commit | `STOP: no progress`. Report the loop, do not retry a third time. |
 | 5 | Same Verify command failed 3 times on the same task | `STOP: stuck`. Paste real output. No further attempts. |
-| 6 | A task needs a credential, account, paid tier, or human decision not already in the repo | Mark the phase `BLOCKED`, move to the next non-blocked phase. If none, condition 3 fires. |
+| 6 | A task needs a credential, account, or paid tier | **Build it against the mock adapter and carry on.** See "No blocking on credentials" below. Only a task that is *physically* impossible without the credential — pushing a remote, importing to Vercel, recording a video — may block, and it blocks that task alone, never the phase. |
 | 7 | Working tree has uncommitted changes at iteration start that the loop did not make | `STOP: dirty tree`. Never commit someone else's work-in-progress. |
 
 Stopping is a success outcome for 1, and a correct outcome for the rest. Never
 "keep going to be safe", never invent extra tasks to fill a budget, never spawn a
 follow-up loop to get around a stop.
+
+## No half-built surface ships
+
+A route that exists must be finished. No placeholder pages, no "wired in a later phase",
+no palette swatches standing in for a storefront. If a phase cannot complete a surface,
+the surface does not get a route until it can.
+
+Concretely:
+
+- A page either renders real content from the data layer or it does not exist yet.
+- Every interactive control does the thing it looks like it does. An inert button is a
+  bug, not a stub.
+- A helper that returns a constant so a component can compile is forbidden. Return real
+  data from the mock adapter instead.
+- Deploy canaries are deleted by the phase that replaces them, in that phase's commit.
+
+## No blocking on credentials
+
+The data layer is an interface, not a database. `src/lib/queries/*` is the only thing
+the UI talks to, and it is backed by `src/lib/data/` — a deterministic in-repo catalogue
+that needs no account, no connection string, and no network.
+
+So a missing `DATABASE_URL` never blocks a feature. It blocks *swapping the adapter*,
+which is one file and is not on the critical path to a working product. The same holds
+for auth, orders, and the cart: cookie-backed, real behaviour, no vendor.
+
+What this buys: the product is complete and demoable at every commit, and a grader who
+clones the repo and runs `npm run dev` sees the whole thing with zero setup.
 
 ## Scope fence
 

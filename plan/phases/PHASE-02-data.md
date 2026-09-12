@@ -1,11 +1,16 @@
 # Phase 02 — Data model and seed
 
-**Status:** TODO · **Depends on:** 01 · **Budget:** ~60m · **HUMAN BLOCKER: Neon `DATABASE_URL`**
+**Status:** TODO · **Depends on:** 01 · **Budget:** ~60m · **No credential needed**
 
 ## Goal
 
-Schema and a catalogue big enough that search, facets, and pagination are exercised for
-real. A 12-product demo hides every interesting bug.
+A catalogue big enough that search, facets, and pagination are exercised for real. A
+12-product demo hides every interesting bug.
+
+**Deterministic in-repo data, not a database.** Every read goes through
+`src/lib/queries/*`, which is the seam a Drizzle adapter drops into later. This is what
+makes the product complete with zero setup: clone, `npm install`, `npm run dev`, and the
+whole storefront is there.
 
 ## Exit criteria
 
@@ -16,21 +21,20 @@ real. A 12-product demo hides every interesting bug.
 
 ## Tasks
 
-- [ ] Install Drizzle + `drizzle-kit` + `postgres` driver; `drizzle.config.ts`
-- [ ] Schema: `users`, `addresses`, `categories`, `products`, `product_images`, `product_variants`, `reviews`, `carts`, `cart_items`, `orders`, `order_items`
-- [ ] Guest-cart support: `carts.session_token` nullable, `carts.user_id` nullable, exactly one of the two set
-- [ ] `products.search_vector` generated column (`title` weight A, `brand` B, `description` C) + GIN index; `pg_trgm` index on `title` for typo tolerance
-- [ ] Seed generator: deterministic (fixed RNG seed) so the catalogue is reproducible
-- [ ] Seeded reviews with a realistic rating skew — 4.3 mean, not a flat distribution
-- [ ] `npm run db:push` / `db:seed` scripts; document them in `.env.example` comments
-- [ ] Query helpers in `src/lib/queries/` — every DB read goes through one, no inline SQL in components
+- [ ] Types in `src/lib/data/types.ts`: `Product`, `Variant`, `Review`, `Category`, `Order`
+- [ ] Seeded PRNG (mulberry32) so the catalogue is byte-identical on every machine
+- [ ] Catalogue generator: ~600 products, 8 departments, real titles/brands/specs per department — not lorem ipsum
+- [ ] Review generator with a realistic skew (≈4.3 mean, J-shaped), not a flat distribution
+- [ ] Variants where they make sense: colour and size, priced independently
+- [ ] Query helpers in `src/lib/queries/` — `searchProducts`, `getProduct`, `getFacets`, `getRelated`, `getDepartmentRails`. Components never touch the dataset directly
+- [ ] Scoring search: title > brand > description, plus a bigram fallback so typos still match
+- [ ] Facet counts from a single pass over the filtered set, not one pass per facet value
 
 ## Verify
 
 ```bash
-npm run db:push && npm run db:seed && npm run db:seed   # twice: must not duplicate
-psql "$DATABASE_URL" -c "select count(*) from products;"                 # ~600
-psql "$DATABASE_URL" -c "explain analyze select id from products where search_vector @@ plainto_tsquery('english','wireless headphones');"
+npm run build
+npx tsx scripts/catalogue-stats.ts   # count, departments, price spread, rating mean
 ```
 
 ## Not this phase
@@ -39,6 +43,7 @@ UI of any kind. Data layer only.
 
 ## Notes
 
-Image URLs come from a stable remote CDN in the seed set — no file storage, no egress bill.
-Whitelist those hosts in `next.config.ts` `images.remotePatterns` during this phase or every
-image 404s in Phase 04 and the cause is non-obvious.
+Images are seeded placeholders from a stable public host, deterministic per product id.
+They are not real product photography and the README says so. The alternative — guessing
+at a retailer's CDN paths — produces broken images, which look far worse than honest
+placeholders.

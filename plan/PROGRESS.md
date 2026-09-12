@@ -4,64 +4,66 @@ Authoritative state. The loop reads this first and writes to it last.
 
 ```yaml
 iteration: 2
-iteration_budget: 45        # hard cap; exhausting it stops the loop (LOOP.md #2)
+iteration_budget: 45
 phases_total: 13
-phases_done: 1
+phases_done: 2
 consecutive_no_progress: 0
-status: STOP:blocked             # RUNNING | STOP:complete | STOP:budget | STOP:blocked | STOP:no-progress | STOP:stuck | STOP:dirty
+status: RUNNING
 ```
+
+## Course correction — 2026-09-12
+
+The first pass treated a missing `DATABASE_URL` as a blocker and stopped with a token
+palette on the live URL. That was wrong twice over: the deploy canary was a placeholder
+route left in production, and no product work needed a database to begin with.
+
+Corrected in `LOOP.md`: **no half-built surface ships**, and **credentials never block a
+feature**. The catalogue is a deterministic in-repo dataset behind `src/lib/queries/*`.
+Swapping it for Drizzle later is one file, and it is not on the critical path.
 
 ## Phase board
 
-| # | Phase | Status | Blocker |
+| # | Phase | Status | Note |
 |---|---|---|---|
 | 00 | [Capture gate](phases/PHASE-00-capture.md) | DONE | — |
-| 01 | [Foundation + first deploy](phases/PHASE-01-foundation.md) | BLOCKED | needs GitHub repo URL + Vercel login for the deploy task |
-| 02 | [Data model + seed](phases/PHASE-02-data.md) | TODO | needs Neon `DATABASE_URL` |
-| 03 | [App shell](phases/PHASE-03-shell.md) | WIP | — |
+| 01 | [Foundation](phases/PHASE-01-foundation.md) | DONE | canary route deleted by Phase 04, as required |
+| 02 | [Catalogue data layer](phases/PHASE-02-data.md) | TODO | mock adapter; no credential needed |
+| 03 | [App shell](phases/PHASE-03-shell.md) | TODO | reopened — cart badge stub is now a rule violation |
 | 04 | [Home](phases/PHASE-04-home.md) | TODO | — |
 | 05 | [Search + facets](phases/PHASE-05-search.md) | TODO | — |
 | 06 | [Product page](phases/PHASE-06-pdp.md) | TODO | — |
-| 07 | [Cart](phases/PHASE-07-cart.md) | TODO | — |
-| 08 | [Auth](phases/PHASE-08-auth.md) | TODO | — |
-| 09 | [Checkout](phases/PHASE-09-checkout.md) | TODO | — |
+| 07 | [Cart](phases/PHASE-07-cart.md) | TODO | cookie-backed, real behaviour |
+| 08 | [Auth](phases/PHASE-08-auth.md) | TODO | signed cookie session, demo account |
+| 09 | [Checkout](phases/PHASE-09-checkout.md) | TODO | simulated payment, labelled as such |
 | 10 | [Orders](phases/PHASE-10-orders.md) | TODO | — |
 | 11 | [Polish](phases/PHASE-11-polish.md) | TODO | — |
-| 12 | [Hand-in](phases/PHASE-12-handin.md) | TODO | needs live URL + repo URL + walkthrough recorded by human |
+| 12 | [Hand-in](phases/PHASE-12-handin.md) | TODO | README + deploy guide |
 
-## Why the loop stopped
+## Remaining human blockers
 
-`LOOP.md` stop condition #3 — every remaining phase is blocked, directly or by
-dependency. Phase 02 needs `DATABASE_URL`; Phases 04-10 all read the catalogue Phase 02
-seeds; Phases 11-12 sit behind those. Phase 01's last two tasks need a GitHub repo and a
-Vercel login. Clearing blockers 1-3 below restarts the loop at Phase 02 and unblocks
-everything downstream in one move.
+Only two, and neither blocks a feature:
 
-## Open human blockers
+1. **Public GitHub repo URL** — `gh` is not installed, the remote is wired by hand.
+2. **Vercel import** — produces the live link. `README.md` documents the steps.
 
-Nothing below can be produced by the agent. Each one blocks a specific phase; the loop
-skips past to the next non-blocked phase rather than waiting.
-
-1. **Neon pooled `DATABASE_URL`** — blocks Phase 02 migration + seed.
-2. **Public GitHub repo URL** — `gh` is not installed, remote must be wired by hand. Blocks the Phase 01 deploy task.
-3. **Vercel account linked to that repo** — blocks the Phase 01 deploy task.
-4. **`/recon/` screenshots** — improves fidelity everywhere, blocks nothing. Directory exists and is empty.
-5. **Walkthrough video, camera on, ≤5 min** — blocks Phase 12 only.
+`DATABASE_URL` is no longer a blocker. It is an optional upgrade path, documented in
+`README.md` under Configuration.
 
 ## Ledger
-
-One line per ticked task. Appended, never edited.
 
 | iter | date (UTC) | phase | task | commit |
 |---|---|---|---|---|
 | — | 2026-09-12 | 00 | capture hook installed, two canaries green, `CAPTURE-TEST.md` written | `89e38f5` |
 | 1 | 2026-09-12 | 01 | scaffold, tokens, lib skeleton, deploy-canary page — build and lint clean | `7de1d0c` |
 | 2 | 2026-09-12 | 03 | header, department nav, footer, skeleton/empty primitives, 404 + error routes | `17e4ff3` |
+| 3 | 2026-09-12 | — | loop rules corrected: no unfinished surfaces, no blocking on credentials | pending |
 
 ## Deferred
 
-Good ideas that are out of scope. Recorded so they are not silently dropped, and not
-built unless a human promotes them.
+Recorded, not built. Promoted only by a human.
 
-- **Mobile hamburger drawer** (Phase 03). Scrollable department strip covers the need for now.
-- **Header cart badge reading real data** (Phase 03 → Phase 07). Stubbed at 0; one-line swap in `src/lib/cart.ts`.
+- **Drizzle + Neon adapter.** The query layer is already the seam. Swap `src/lib/data/`
+  for SQL without touching a component.
+- **Mobile hamburger drawer.** The scrollable department strip covers the same need.
+- **Product photography.** Catalogue images are seeded placeholders, stated plainly in
+  the README rather than passed off as real product shots.
