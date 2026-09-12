@@ -6,7 +6,7 @@ Authoritative state. The loop reads this first and writes to it last.
 iteration: 5
 iteration_budget: 45
 phases_total: 13
-phases_done: 5
+phases_done: 6
 consecutive_no_progress: 0
 status: RUNNING
 ```
@@ -30,7 +30,7 @@ Swapping it for Drizzle later is one file, and it is not on the critical path.
 | 02 | [Catalogue data layer](phases/PHASE-02-data.md) | DONE | mock adapter; no credential needed |
 | 03 | [App shell](phases/PHASE-03-shell.md) | DONE | cart badge now reads the real cart |
 | 04 | [Home](phases/PHASE-04-home.md) | DONE | canary route deleted, as the rule requires |
-| 05 | [Search + facets](phases/PHASE-05-search.md) | TODO | — |
+| 05 | [Search + facets](phases/PHASE-05-search.md) | DONE | URL-driven, JS-free filters |
 | 06 | [Product page](phases/PHASE-06-pdp.md) | TODO | — |
 | 07 | [Cart](phases/PHASE-07-cart.md) | TODO | cookie-backed, real behaviour |
 | 08 | [Auth](phases/PHASE-08-auth.md) | TODO | signed cookie session, demo account |
