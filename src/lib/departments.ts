@@ -1,17 +1,9 @@
 /**
- * Department list. Hard-coded for the shell in Phase 03; Phase 02 seeds the same
- * slugs into `categories`, and the nav switches to reading them from the DB there.
+ * Re-export so the nav and the catalogue can never drift apart. Two lists of
+ * departments is two lists to forget to update.
  */
-export const DEPARTMENTS = [
-  { name: "Electronics", slug: "electronics" },
-  { name: "Computers", slug: "computers" },
-  { name: "Home & Kitchen", slug: "home-kitchen" },
-  { name: "Books", slug: "books" },
-  { name: "Clothing", slug: "clothing" },
-  { name: "Sports & Outdoors", slug: "sports-outdoors" },
-  { name: "Beauty", slug: "beauty" },
-  { name: "Toys & Games", slug: "toys-games" },
-] as const;
+export { DEPARTMENTS, departmentBySlug } from "@/lib/data/catalogue";
+import { DEPARTMENTS } from "@/lib/data/catalogue";
 
 export const SEARCH_SCOPES = [
   { label: "All", value: "all" },

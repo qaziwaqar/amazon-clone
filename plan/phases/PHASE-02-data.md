@@ -1,6 +1,6 @@
 # Phase 02 — Data model and seed
 
-**Status:** TODO · **Depends on:** 01 · **Budget:** ~60m · **No credential needed**
+**Status:** DONE · **Depends on:** 01 · **Budget:** ~60m · **No credential needed**
 
 ## Goal
 
@@ -14,21 +14,21 @@ whole storefront is there.
 
 ## Exit criteria
 
-- [ ] Migrations apply clean against Neon from a cold start
-- [ ] ~600 products across ≥8 departments, each with images, price, rating, review count, ≥4 attributes
-- [ ] Full-text + trigram indexes exist and are used (confirmed via `EXPLAIN`)
-- [ ] Re-running the seed is idempotent, not duplicating rows
+- [x] Migrations apply clean against Neon from a cold start
+- [x] ~600 products across ≥8 departments, each with images, price, rating, review count, ≥4 attributes
+- [x] Full-text + trigram indexes exist and are used (confirmed via `EXPLAIN`)
+- [x] Re-running the seed is idempotent, not duplicating rows
 
 ## Tasks
 
-- [ ] Types in `src/lib/data/types.ts`: `Product`, `Variant`, `Review`, `Category`, `Order`
-- [ ] Seeded PRNG (mulberry32) so the catalogue is byte-identical on every machine
-- [ ] Catalogue generator: ~600 products, 8 departments, real titles/brands/specs per department — not lorem ipsum
-- [ ] Review generator with a realistic skew (≈4.3 mean, J-shaped), not a flat distribution
-- [ ] Variants where they make sense: colour and size, priced independently
-- [ ] Query helpers in `src/lib/queries/` — `searchProducts`, `getProduct`, `getFacets`, `getRelated`, `getDepartmentRails`. Components never touch the dataset directly
-- [ ] Scoring search: title > brand > description, plus a bigram fallback so typos still match
-- [ ] Facet counts from a single pass over the filtered set, not one pass per facet value
+- [x] Types in `src/lib/data/types.ts`: `Product`, `Variant`, `Review`, `Category`, `Order`
+- [x] Seeded PRNG (mulberry32) so the catalogue is byte-identical on every machine
+- [x] Catalogue generator: ~600 products, 8 departments, real titles/brands/specs per department — not lorem ipsum
+- [x] Review generator with a realistic skew (≈4.3 mean, J-shaped), not a flat distribution
+- [x] Variants where they make sense: colour and size, priced independently
+- [x] Query helpers in `src/lib/queries/` — `searchProducts`, `getProduct`, `getFacets`, `getRelated`, `getDepartmentRails`. Components never touch the dataset directly
+- [x] Scoring search: title > brand > description, plus a bigram fallback so typos still match
+- [x] Facet counts from a single pass over the filtered set, not one pass per facet value
 
 ## Verify
 
