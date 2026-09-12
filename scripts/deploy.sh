@@ -40,8 +40,12 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-LOG="$(mktemp "${TMPDIR:-/tmp}/amazon-clone-deploy.XXXXXX.log")"
+# BSD mktemp only expands XXXXXX at the very end of a template — give it a suffix and
+# it creates a file literally named "...XXXXXX.log". So the log gets a timestamped name
+# built here, and only OUT, which needs no suffix, goes through mktemp.
+LOG="${TMPDIR:-/tmp}/amazon-clone-deploy-$(date +%Y%m%d-%H%M%S).log"
 OUT="$(mktemp "${TMPDIR:-/tmp}/amazon-clone-deploy-out.XXXXXX")"
+: > "$LOG"
 TAIL_PID=""
 
 say()  { printf '\n\033[1m▸ %s\033[0m\n' "$1"; }
@@ -65,7 +69,7 @@ die() {
   exit 1
 }
 
-[ "$LOGS" = "1" ] && { : > "$LOG"; tail -f "$LOG" | sed 's/^/  │ /' & TAIL_PID=$!; }
+[ "$LOGS" = "1" ] && { tail -f "$LOG" | sed 's/^/  │ /' & TAIL_PID=$!; }
 
 # ------------------------------------------------------------------ vercel calls
 

@@ -22,3 +22,6 @@ next-env.d.ts
 /coverage
 .pnpm-debug.log*
 .env*
+
+# .env.example holds placeholders only and ships with the repo.
+!.env.example
