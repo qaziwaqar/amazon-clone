@@ -1,6 +1,6 @@
 # Phase 06 — Product page
 
-**Status:** TODO · **Depends on:** 02, 03 · **Budget:** ~70m
+**Status:** DONE · **Depends on:** 02, 03 · **Budget:** ~70m
 
 ## Goal
 
@@ -9,24 +9,24 @@ that make a PDP feel real.
 
 ## Exit criteria
 
-- [ ] `/dp/[slug]` server-rendered with correct metadata (OG image, title, price)
-- [ ] Image gallery: thumbnail rail, hover-zoom on desktop, swipe on mobile
-- [ ] Buy box pinned right on desktop: price, delivery estimate, stock, qty, add-to-cart, buy-now
-- [ ] Variant switch (colour / size) updates price, image, and URL without a full reload
-- [ ] Reviews: histogram, sorted list, verified badges
+- [x] `/dp/[slug]` server-rendered with correct metadata (OG image, title, price)
+- [x] Image gallery: thumbnail rail, hover-zoom on desktop, swipe on mobile
+- [x] Buy box pinned right on desktop: price, delivery estimate, stock, qty, add-to-cart, buy-now
+- [x] Variant switch (colour / size) updates price, image, and URL without a full reload
+- [x] Reviews: histogram, sorted list, verified badges
 
 ## Tasks
 
-- [ ] Route, data loader, `generateMetadata`, 404 on unknown slug
-- [ ] Gallery with lens-zoom desktop / swipeable mobile
-- [ ] Title block: title, brand link, star row linking to reviews anchor, answered-questions line
-- [ ] Price block: current, list, "Save X%", per-unit price where sensible
-- [ ] Buy box: stock state, delivery date computed from a fixed offset, qty select, both CTAs
-- [ ] Variant selector, swatch for colour, pill for size; unavailable combinations disabled not hidden
-- [ ] "About this item" bullets + specification table
-- [ ] Review section: rating histogram bars, filter by star, sort by helpful/recent
-- [ ] "Customers also viewed" rail — same-category heuristic, honest about being one
-- [ ] Record a view for recently-viewed (cookie, capped at 20)
+- [x] Route, data loader, `generateMetadata`, 404 on unknown slug
+- [x] Gallery with lens-zoom desktop / swipeable mobile
+- [x] Title block: title, brand link, star row linking to reviews anchor, answered-questions line
+- [x] Price block: current, list, "Save X%", per-unit price where sensible
+- [x] Buy box: stock state, delivery date computed from a fixed offset, qty select, both CTAs
+- [x] Variant selector, swatch for colour, pill for size; unavailable combinations disabled not hidden
+- [x] "About this item" bullets + specification table
+- [x] Review section: rating histogram bars, filter by star, sort by helpful/recent
+- [x] "Customers also viewed" rail — same-category heuristic, honest about being one
+- [x] Record a view for recently-viewed (cookie, capped at 20)
 
 ## Verify
 
