@@ -3,12 +3,12 @@
 Authoritative state. The loop reads this first and writes to it last.
 
 ```yaml
-iteration: 5
+iteration: 12
 iteration_budget: 45
 phases_total: 13
-phases_done: 11
+phases_done: 12
 consecutive_no_progress: 0
-status: RUNNING
+status: STOP:blocked
 ```
 
 ## Course correction — 2026-09-12
@@ -36,8 +36,15 @@ Swapping it for Drizzle later is one file, and it is not on the critical path.
 | 08 | [Auth](phases/PHASE-08-auth.md) | DONE | signed cookie session, demo account |
 | 09 | [Checkout](phases/PHASE-09-checkout.md) | DONE | simulated payment, labelled as such |
 | 10 | [Orders](phases/PHASE-10-orders.md) | DONE | — |
-| 11 | [Polish](phases/PHASE-11-polish.md) | TODO | — |
-| 12 | [Hand-in](phases/PHASE-12-handin.md) | TODO | README + deploy guide |
+| 11 | [Polish](phases/PHASE-11-polish.md) | DONE | verified by HTTP, not by reading markup |
+| 12 | [Hand-in](phases/PHASE-12-handin.md) | WIP | README done; live link and walkthrough need a human |
+
+## Why the loop stopped
+
+`LOOP.md` stop condition #3. Everything buildable is built: all twelve product phases
+are done and verified against a running server. What remains is physically impossible
+for the agent — pushing to a GitHub remote, importing to Vercel, and recording a
+walkthrough.
 
 ## Remaining human blockers
 

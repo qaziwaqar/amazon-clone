@@ -26,7 +26,10 @@ type Props = {
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const product = getProductBySlug(slug);
-  if (!product) return { title: "Product not found" };
+  // Bail here, not just in the page: with a loading.tsx in place the response streams,
+  // so the 200 shell is already flushed by the time the page component runs and a
+  // notFound() there cannot set the status. Metadata resolves before the flush.
+  if (!product) notFound();
   return {
     title: product.title,
     description: product.description,
