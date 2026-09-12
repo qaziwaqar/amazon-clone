@@ -93,7 +93,7 @@ that sleep after inactivity: a 50-second cold start makes the site look broken.
 | Route | What is there |
 |---|---|
 | `/` | Hero carousel, category tiles, deals, best-seller and browsing rails |
-| Header | "All" department drawer, delivery-location picker with optional GPS, language and currency picker |
+| Header | "All" department drawer (full department list lives here), delivery-location picker with optional GPS, language and currency picker |
 | `/deals` | Genuinely discounted stock, deepest discount first |
 | `/coupons` | Savings of 20%+, grouped by department |
 | `/gift-cards` | Gift cards as real catalogue items — they add to the cart and check out normally |

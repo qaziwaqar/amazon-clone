@@ -116,3 +116,14 @@ and a dead link is worse than an honest omission.
 Verified over HTTP: every new route 200 (`/buy-again` correctly 307s to sign-in when
 signed out); `de`/`ar`/`zh` chrome translated; `<html lang>` and `dir` correct; and a
 $25 gift card renders as 23,00 €, ‏91.75 د.إ‏, ¥181.00 and PKR 6,950.
+
+## Reported-issue pass 4 — 2026-09-12
+
+| # | Issue | Fix |
+|---|---|---|
+| 10 | Cart count misaligned against the icon | Pass 3 moved it to the icon's top-right, which was wrong in the other direction. The cart's handle hangs off the left, so the number belongs over the *basket*, not over the glyph's full width — now offset to 56% and centred on that, in a box tall enough that nothing clips at the header edge |
+| 11 | "Toys & Games" clipped off the end of the nav strip | Departments are out of the strip entirely. It carries the six shortcuts and ends at Gift Cards; the full department list lives in the All drawer, where it is readable at any width, and `/s?i=<slug>` is unchanged |
+
+Verified: the strip renders exactly Today's Deals, Customer Service, Coupons, Buy Again,
+Browsing History, Gift Cards — no department names — while the drawer still carries all
+nine and `/s?i=toys-games` still returns 200.

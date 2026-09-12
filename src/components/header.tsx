@@ -56,18 +56,19 @@ export async function Header({ query }: { query?: string }) {
               aria-label={`${dict.cart}, ${cartCount}`}
             >
               {/*
-                The count sits over the cart's top-right corner, the way the real badge
-                does — not centred above the icon, which reads as a separate element
-                rather than as part of it.
+                The count sits over the basket, not over the whole glyph. The cart's
+                handle hangs off the left, so centring on the icon's full width pushes
+                the number left of where it belongs — hence the 56% offset. The box is
+                tall enough to hold both, so nothing clips against the header edge.
               */}
-              <span className="relative block h-8 w-8">
-                <CartIcon className="absolute bottom-0 h-6 w-8" />
+              <span className="relative block h-9 w-9">
                 <span
                   aria-hidden
-                  className="absolute end-1 top-0 min-w-4 text-center text-sm font-bold leading-none text-accent"
+                  className="absolute left-[56%] top-0 -translate-x-1/2 text-sm font-bold leading-none text-accent"
                 >
                   {cartCount}
                 </span>
+                <CartIcon className="absolute bottom-0 left-0 h-6 w-9" />
               </span>
               <span className="hidden pb-0.5 text-sm font-bold sm:block">{dict.cart}</span>
             </Link>

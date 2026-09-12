@@ -7,9 +7,12 @@ import { NavDrawer } from "./nav-drawer";
 export async function DepartmentNav() {
   const [user, dict] = await Promise.all([getUser(), getDict()]);
 
-  // Every entry here goes to a page that exists and does something. Amazon's strip also
-  // carries Prime Video, Registry and Sell; those are on the cut list, so they are
-  // absent rather than present and dead.
+  // Shortcuts only. The departments used to be appended here too, which overflowed the
+  // strip and left the last one clipped at the viewport edge — they live in the All
+  // drawer instead, where the full list is readable at any width.
+  //
+  // Amazon's strip also carries Prime Video, Registry and Sell; those are on the cut
+  // list, so they are absent rather than present and dead.
   const shortcuts = [
     { label: dict.todaysDeals, href: "/deals" },
     { label: dict.customerService, href: "/help" },
@@ -34,17 +37,6 @@ export async function DepartmentNav() {
           </Link>
         ))}
 
-        <span aria-hidden className="mx-1 h-4 w-px shrink-0 bg-white/25" />
-
-        {DEPARTMENTS.map((d) => (
-          <Link
-            key={d.slug}
-            href={`/s?i=${d.slug}`}
-            className="shrink-0 rounded-sm border border-transparent px-2 py-1 hover:border-white"
-          >
-            {d.name}
-          </Link>
-        ))}
       </div>
     </nav>
   );
