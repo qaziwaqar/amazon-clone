@@ -13,3 +13,7 @@ export const RECENTLY_VIEWED_MAX = 20;
 
 export const CART_COOKIE = "cart_token";
 export const SESSION_COOKIE = "session";
+
+/** Absolute origin, used for metadata, sitemap and robots. */
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "http://localhost:3000";

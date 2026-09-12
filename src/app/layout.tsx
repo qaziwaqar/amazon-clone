@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
+import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/constants";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
@@ -14,6 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${SITE_NAME}: ${SITE_TAGLINE}`,
     template: `%s - ${SITE_NAME}`,
