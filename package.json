@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "deploy": "bash scripts/deploy.sh",
-    "deploy:check": "bash scripts/deploy.sh --dry-run --skip-checks"
+    "deploy:check": "bash scripts/deploy.sh --dry-run --skip-checks",
+    "deploy:logs": "bash scripts/deploy.sh --logs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

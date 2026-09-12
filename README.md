@@ -95,10 +95,30 @@ tier, nothing to configure. The script handles sign-in from there.
 ### Flags
 
 ```bash
+npm run deploy:logs               # stream everything Vercel prints, plus debug output
 npm run deploy -- --skip-checks   # skip lint and the local build (faster, riskier)
+npm run deploy -- --scope my-team # deploy under a Vercel team, not your personal account
 npm run deploy:check              # dry run: print every step, touch nothing
 bash scripts/deploy.sh --help
 ```
+
+### If it hangs or fails
+
+Every Vercel call runs with a timeout and with **stdin closed**, so a prompt from the
+CLI fails fast instead of blocking forever, and the script says which command stalled
+and what to do about it.
+
+All Vercel output — including stderr — is written to a log file whose path is printed
+on failure and at the end of a successful run. Nothing is silently discarded.
+
+| Symptom | What to do |
+|---|---|
+| A step stalls, then reports a timeout | The CLI wanted input. The message names the command — run it once by hand (`npx vercel <command>`), answer the prompt, then re-run `npm run deploy`. |
+| You want to watch it work | `npm run deploy:logs` |
+| You belong to a Vercel team | `npm run deploy -- --scope <team-slug>`, or set `VERCEL_SCOPE` |
+| Something looks wrong on the live site | `npx vercel logs <your-url>` |
+
+Re-running is always safe. The script only does what is still outstanding.
 
 ### Why Vercel
 
