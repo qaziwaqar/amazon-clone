@@ -5,12 +5,14 @@ in, check out, and track the order afterwards. Next.js 16, TypeScript, Tailwind 
 
 **Runs with zero setup.** No database, no API keys, no accounts. Clone, install, run.
 
+Repository: <https://github.com/qaziwaqar/amazon-clone>
+
 ---
 
 ## 1. Run it locally
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/qaziwaqar/amazon-clone.git
 cd amazon-clone
 npm install
 npm run dev
@@ -135,12 +137,22 @@ The runners-up, for the record:
 | Render | Free tier sleeps after inactivity. A 50-second cold start makes the site look broken to anyone opening the link. |
 | Railway / Fly | Require a card on file. |
 
+### Git is not part of the deploy
+
+`npm run deploy` uploads the folder straight to Vercel. The GitHub repository is there
+to be read — it is not a build trigger, and nothing breaks if a deploy and a push
+happen in either order.
+
+If you would rather have pushes deploy automatically, connect the repository in the
+Vercel dashboard (Project → Settings → Git) and import https://github.com/qaziwaqar/amazon-clone.
+From then on every push to `main` builds, and the script is still available for
+deploying work that is not pushed yet.
+
 ### Deploying by hand instead
 
-If you would rather not run a script: push the repo to GitHub, import it at
-<https://vercel.com/new>, keep every default, and add `JWT_SECRET` under Environment
-Variables. After the first deploy, add `NEXT_PUBLIC_SITE_URL` set to the URL Vercel
-gave you and redeploy.
+Import https://github.com/qaziwaqar/amazon-clone at <https://vercel.com/new>, keep every
+default, and add `JWT_SECRET` under Environment Variables. After the first deploy, add
+`NEXT_PUBLIC_SITE_URL` set to the URL Vercel gave you and redeploy.
 
 ### Any other Node host
 

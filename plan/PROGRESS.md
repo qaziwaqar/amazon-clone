@@ -50,8 +50,10 @@ walkthrough.
 
 Only two, and neither blocks a feature:
 
-1. **Public GitHub repo URL** — `gh` is not installed, the remote is wired by hand.
-   Needed for the submission, not for deploying.
+1. ~~**Public GitHub repo URL**~~ — resolved. `origin` is
+   `git@github.com:qaziwaqar/amazon-clone.git`, history pushed to `main`
+   (https://github.com/qaziwaqar/amazon-clone). Not a deploy dependency: `npm run deploy`
+   uploads the folder directly.
 2. ~~**Vercel import**~~ — resolved. `npm run deploy` ships from this machine with no
    git remote and no CI. One browser sign-in the first time, nothing after that.
 

@@ -52,3 +52,15 @@ chicken-and-egg — `NEXT_PUBLIC_*` is inlined at build time, so the first build
 know its own URL, and the script sets it and redeploys once, on the first run only.
 
 Idempotent by design: every later run is just build, deploy, print the link.
+
+## Repository
+
+`origin` → `git@github.com:qaziwaqar/amazon-clone.git` — https://github.com/qaziwaqar/amazon-clone
+
+The whole history is on `main`, `.agent-logs/` included and interleaved with the code it
+produced, which is what the commit order is meant to show. The repo is not wired to
+Vercel: deploys go straight from the machine via `npm run deploy`, so a push and a
+deploy are independent of each other.
+
+**Check before submitting:** the repository must be set to public in GitHub's settings.
+A private repo makes the whole submission unassessable.
