@@ -6,7 +6,7 @@ Authoritative state. The loop reads this first and writes to it last.
 iteration: 5
 iteration_budget: 45
 phases_total: 13
-phases_done: 7
+phases_done: 11
 consecutive_no_progress: 0
 status: RUNNING
 ```
@@ -32,10 +32,10 @@ Swapping it for Drizzle later is one file, and it is not on the critical path.
 | 04 | [Home](phases/PHASE-04-home.md) | DONE | canary route deleted, as the rule requires |
 | 05 | [Search + facets](phases/PHASE-05-search.md) | DONE | URL-driven, JS-free filters |
 | 06 | [Product page](phases/PHASE-06-pdp.md) | DONE | variant state in the URL |
-| 07 | [Cart](phases/PHASE-07-cart.md) | TODO | cookie-backed, real behaviour |
-| 08 | [Auth](phases/PHASE-08-auth.md) | TODO | signed cookie session, demo account |
-| 09 | [Checkout](phases/PHASE-09-checkout.md) | TODO | simulated payment, labelled as such |
-| 10 | [Orders](phases/PHASE-10-orders.md) | TODO | — |
+| 07 | [Cart](phases/PHASE-07-cart.md) | DONE | cookie-backed, real behaviour |
+| 08 | [Auth](phases/PHASE-08-auth.md) | DONE | signed cookie session, demo account |
+| 09 | [Checkout](phases/PHASE-09-checkout.md) | DONE | simulated payment, labelled as such |
+| 10 | [Orders](phases/PHASE-10-orders.md) | DONE | — |
 | 11 | [Polish](phases/PHASE-11-polish.md) | TODO | — |
 | 12 | [Hand-in](phases/PHASE-12-handin.md) | TODO | README + deploy guide |
 

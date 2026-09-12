@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCartCount } from "@/lib/cart";
+import { getUser } from "@/lib/auth";
 import { Logo } from "./logo";
 import { SearchBar } from "./search-bar";
 import { DepartmentNav } from "./department-nav";
@@ -14,7 +15,7 @@ import { CartIcon, PinIcon } from "./icons";
  * correct on first paint — no count flashing from 0 to 3 after hydration.
  */
 export async function Header({ query }: { query?: string }) {
-  const cartCount = await getCartCount();
+  const [cartCount, user] = await Promise.all([getCartCount(), getUser()]);
 
   return (
     <header className="sticky top-0 z-40">
@@ -39,10 +40,12 @@ export async function Header({ query }: { query?: string }) {
 
           <div className="ml-auto flex items-center md:ml-0">
             <Link
-              href="/signin"
+              href={user ? "/account" : "/signin"}
               className="rounded-sm border border-transparent px-2 py-1.5 leading-tight hover:border-white"
             >
-              <span className="block text-xs text-white/90">Hello, sign in</span>
+              <span className="block max-w-32 truncate text-xs text-white/90">
+                {user ? `Hello, ${user.name}` : "Hello, sign in"}
+              </span>
               <span className="block text-sm font-bold">Account &amp; Lists</span>
             </Link>
 
