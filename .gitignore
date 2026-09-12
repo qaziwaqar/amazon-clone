@@ -18,3 +18,6 @@ next-env.d.ts
 *.tsbuildinfo
 
 # .agent-logs/ is INTENTIONALLY not ignored. It ships with the repo.
+
+/coverage
+.pnpm-debug.log*

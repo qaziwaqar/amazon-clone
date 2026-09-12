@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens.
+ *
+ * Every colour in the app comes from here. No component hard-codes a hex value —
+ * that is what makes a 600-product catalogue look like one product instead of ten.
+ *
+ * Amazon ships light-only. That is a deliberate product decision, not an omission:
+ * a dark storefront changes how product photography reads, and every seller image
+ * in the catalogue is shot on white. So there is no dark palette here.
+ */
+
+@theme {
+  /* Chrome */
+  --color-squid: #131921; /* top nav */
+  --color-nav: #232f3e; /* department strip, footer top */
+  --color-nav-hover: #37475a;
+  --color-footer: #131a22;
+
+  /* Accent / search */
+  --color-accent: #febd69;
+  --color-accent-hover: #f3a847;
+
+  /* Calls to action */
+  --color-cta: #ffd814; /* Add to cart */
+  --color-cta-hover: #f7ca00;
+  --color-cta-border: #fcd200;
+  --color-buy: #ffa41c; /* Buy now */
+  --color-buy-hover: #fa8900;
+  --color-buy-border: #ff8f00;
+
+  /* Text */
+  --color-ink: #0f1111;
+  --color-muted: #565959;
+  --color-link: #007185;
+  --color-link-hover: #c7511f;
+
+  /* Semantic */
+  --color-price: #b12704;
+  --color-success: #067d62;
+  --color-danger: #cc1200;
+  --color-star: #de7921;
+
+  /* Surfaces */
+  --color-surface: #ffffff;
+  --color-surface-alt: #eaeded;
+  --color-surface-sunken: #f7fafa;
+  --color-line: #d5d9d9;
+
+  /* Type scale — Amazon's is tighter than a default Tailwind scale */
+  --font-sans: var(--font-inter), "Amazon Ember", Arial, Helvetica, sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Amazon's link colour is load-bearing; it is how the whole site signals "clickable". */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Visible focus everywhere. Phase 11 audits this; cheaper to start correct. */
+:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Amazon's horizontal rails scroll but never show a scrollbar. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

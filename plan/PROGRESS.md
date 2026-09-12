@@ -3,7 +3,7 @@
 Authoritative state. The loop reads this first and writes to it last.
 
 ```yaml
-iteration: 0
+iteration: 1
 iteration_budget: 45        # hard cap; exhausting it stops the loop (LOOP.md #2)
 phases_total: 13
 phases_done: 1
@@ -16,7 +16,7 @@ status: RUNNING             # RUNNING | STOP:complete | STOP:budget | STOP:block
 | # | Phase | Status | Blocker |
 |---|---|---|---|
 | 00 | [Capture gate](phases/PHASE-00-capture.md) | DONE | — |
-| 01 | [Foundation + first deploy](phases/PHASE-01-foundation.md) | TODO | needs GitHub repo URL + Vercel login for the deploy task |
+| 01 | [Foundation + first deploy](phases/PHASE-01-foundation.md) | BLOCKED | needs GitHub repo URL + Vercel login for the deploy task |
 | 02 | [Data model + seed](phases/PHASE-02-data.md) | TODO | needs Neon `DATABASE_URL` |
 | 03 | [App shell](phases/PHASE-03-shell.md) | TODO | — |
 | 04 | [Home](phases/PHASE-04-home.md) | TODO | — |
@@ -47,6 +47,7 @@ One line per ticked task. Appended, never edited.
 | iter | date (UTC) | phase | task | commit |
 |---|---|---|---|---|
 | — | 2026-09-12 | 00 | capture hook installed, two canaries green, `CAPTURE-TEST.md` written | `89e38f5` |
+| 1 | 2026-09-12 | 01 | scaffold, tokens, lib skeleton, deploy-canary page — build and lint clean | pending |
 
 ## Deferred
 
