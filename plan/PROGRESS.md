@@ -51,7 +51,9 @@ walkthrough.
 Only two, and neither blocks a feature:
 
 1. **Public GitHub repo URL** — `gh` is not installed, the remote is wired by hand.
-2. **Vercel import** — produces the live link. `README.md` documents the steps.
+   Needed for the submission, not for deploying.
+2. ~~**Vercel import**~~ — resolved. `npm run deploy` ships from this machine with no
+   git remote and no CI. One browser sign-in the first time, nothing after that.
 
 `DATABASE_URL` is no longer a blocker. It is an optional upgrade path, documented in
 `README.md` under Configuration.

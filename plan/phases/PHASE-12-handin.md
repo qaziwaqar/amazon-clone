@@ -39,3 +39,16 @@ curl -sSf -o /dev/null -w '%{http_code}\n' "$LIVE_URL"
 
 The walkthrough is scored. Lead with the buy path working end to end, then the cut list —
 naming what was deliberately not built is product judgement, which is a scored axis.
+
+## Deploy path — settled
+
+`npm run deploy` (`scripts/deploy.sh`) ships from a local folder to Vercel with no git
+remote and no CI, which is what the assignment actually needs: the repo is published for
+reading, not as a build trigger.
+
+The script gates on a local lint and build before it touches Vercel, generates and
+stores `JWT_SECRET` without printing it, and handles the `NEXT_PUBLIC_SITE_URL`
+chicken-and-egg — `NEXT_PUBLIC_*` is inlined at build time, so the first build cannot
+know its own URL, and the script sets it and redeploys once, on the first run only.
+
+Idempotent by design: every later run is just build, deploy, print the link.

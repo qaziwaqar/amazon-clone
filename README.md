@@ -59,34 +59,78 @@ cp .env.example .env.local   # then edit
 
 ---
 
-## 3. Deploy to Vercel
+## 3. Deploy
 
-Free tier, no card.
+One command, from this machine. No git remote, no GitHub, no CI.
 
-1. Push the repo to GitHub (public).
-2. Go to <https://vercel.com/new> and import the repo.
-3. Leave every build setting on its default — Next.js is detected automatically.
-4. Open **Environment Variables** and add `JWT_SECRET` (from `openssl rand -base64 32`).
-   Skip this and sign-in still works, but sessions drop on redeploys.
-5. Click **Deploy**. First build takes about a minute.
-6. After the first deploy, add `NEXT_PUBLIC_SITE_URL` set to the URL Vercel gave you,
-   then redeploy so metadata and the sitemap use absolute URLs.
+```bash
+npm run deploy
+```
 
-Every push to `main` redeploys automatically.
+That is the whole thing. The script is idempotent — run it again any time to ship an
+update, and it skips whatever is already done.
 
-### Deploying anywhere else
+### What it does
 
-Any host that runs a Node server works — it is a stock Next.js app with no native
-dependencies:
+1. Checks Node 20+ and installs dependencies if they are missing.
+2. **Runs lint and a production build locally.** This is a gate: a build that fails here
+   never reaches the live URL.
+3. Signs you in to Vercel if needed — a browser opens, once, the first time.
+4. Links the folder to a Vercel project, accepting defaults.
+5. Generates `JWT_SECRET` and pushes it to Vercel. The value is never printed or
+   committed.
+6. Deploys to production.
+7. Records the live URL as `NEXT_PUBLIC_SITE_URL` and redeploys once, so metadata,
+   `sitemap.xml` and `robots.txt` carry absolute URLs. First run only —
+   `NEXT_PUBLIC_*` is inlined at build time, so the first build cannot know its own URL.
+8. Fetches the live URL and reports the status code.
+
+Then it prints the link.
+
+### Before the first run
+
+Only one thing: a free Vercel account at <https://vercel.com/signup>. No card, no paid
+tier, nothing to configure. The script handles sign-in from there.
+
+### Flags
+
+```bash
+npm run deploy -- --skip-checks   # skip lint and the local build (faster, riskier)
+npm run deploy:check              # dry run: print every step, touch nothing
+bash scripts/deploy.sh --help
+```
+
+### Why Vercel
+
+It is the only free host where this project deploys with no adapter and no workarounds:
+Next.js 16 App Router, server actions, middleware and image optimization all work as
+built, and `vercel deploy` ships straight from a local folder with no git repository.
+
+The runners-up, for the record:
+
+| Host | Verdict |
+|---|---|
+| Netlify | Works, via `@netlify/plugin-nextjs`. One more moving part for no gain. |
+| Cloudflare Workers | Needs the OpenNext adapter; middleware and image optimization need care. |
+| Render | Free tier sleeps after inactivity. A 50-second cold start makes the site look broken to anyone opening the link. |
+| Railway / Fly | Require a card on file. |
+
+### Deploying by hand instead
+
+If you would rather not run a script: push the repo to GitHub, import it at
+<https://vercel.com/new>, keep every default, and add `JWT_SECRET` under Environment
+Variables. After the first deploy, add `NEXT_PUBLIC_SITE_URL` set to the URL Vercel
+gave you and redeploy.
+
+### Any other Node host
+
+It is a stock Next.js app with no native dependencies:
 
 ```bash
 npm run build && npm start     # binds to $PORT, default 3000
 ```
 
-Netlify and Render both work with the same two environment variables. Avoid free tiers
-that sleep after inactivity: a 50-second cold start makes the site look broken.
-
----
+Two environment variables, both optional, both described in §2.
 
 ## 4. What is built
 
