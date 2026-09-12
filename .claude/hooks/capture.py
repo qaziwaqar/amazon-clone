@@ -21,6 +21,7 @@ import json
 import os
 import re
 import sys
+import time
 from datetime import datetime, timezone
 
 # .claude/hooks/capture.py -> repo root. Derived from __file__ rather than
@@ -98,20 +99,24 @@ def model_from_transcript(entries):
     return FALLBACK_MODEL
 
 
-def final_response(entries):
+def turn_bounds(entries):
+    """[(start, end)] index pairs, one per human prompt, end exclusive."""
+    starts = [i for i, e in enumerate(entries) if is_human_prompt(e)]
+    return [
+        (starts[n], starts[n + 1] if n + 1 < len(starts) else len(entries))
+        for n in range(len(starts))
+    ]
+
+
+def assistant_text(entries, start, end):
     """
-    Every assistant text block emitted since the last human prompt, in order.
+    Every assistant text block in [start, end), in order.
 
     Text between tool calls is kept: in this harness it is shown to the user and is
     part of what came back. thinking / tool_use / tool_result blocks are skipped.
     """
-    start = -1
-    for index, entry in enumerate(entries):
-        if is_human_prompt(entry):
-            start = index
-
     chunks = []
-    for entry in entries[start + 1:]:
+    for entry in entries[start:end]:
         if entry.get("type") != "assistant":
             continue
         content = entry.get("message", {}).get("content")
@@ -128,6 +133,58 @@ def final_response(entries):
             if text:
                 chunks.append(text)
     return "\n\n".join(chunks)
+
+
+def last_assistant_timestamp(entries, start, end):
+    for entry in reversed(entries[start:end]):
+        if entry.get("type") == "assistant" and entry.get("timestamp"):
+            return entry["timestamp"]
+    return None
+
+
+def final_response(entries):
+    """Assistant text since the last human prompt."""
+    bounds = turn_bounds(entries)
+    if not bounds:
+        return ""
+    start, end = bounds[-1]
+    return assistant_text(entries, start + 1, end)
+
+
+def reconcile(path, entries, short_id, model, up_to=None):
+    """
+    Self-heal any PROMPT in the log that has no matching RESPONSE.
+
+    The Stop hook can fire before the harness has flushed the final assistant message to
+    the transcript JSONL. The retry loop in response mode usually wins that race; this is
+    the backstop for when it does not, so a turn can never silently vanish from the log.
+
+    Only ever called from prompt mode, before the incoming PROMPT is appended. Every turn
+    it can see is therefore finished. `up_to` caps that explicitly for manual repair runs,
+    where a turn may still be in flight and would otherwise be captured half-written.
+    """
+    highest = prompt_count(path)
+    if up_to is not None:
+        highest = min(highest, up_to)
+    if highest == 0:
+        return
+    bounds = turn_bounds(entries)
+    for num in range(1, highest + 1):
+        with open(path, "r", errors="replace") as fh:
+            content = fh.read()
+        if f"[LOG_ENTRY type=RESPONSE num={num} " in content:
+            continue
+        if len(bounds) < num:
+            continue
+        start, end = bounds[num - 1]
+        body = assistant_text(entries, start + 1, end)
+        if not body.strip():
+            continue
+        timestamp = last_assistant_timestamp(entries, start + 1, end) or utc_now()
+        insert_response(
+            path, num, short_id, model, timestamp, body,
+            note="capture: reconciled (Stop fired before the transcript flushed)",
+        )
 
 
 def log_path_for(session_id, now):
@@ -187,15 +244,37 @@ def already_logged(path, kind, num, body):
     return body.strip() in content
 
 
-def append_entry(path, kind, num, short_id, model, now, body):
+def build_entry(kind, num, short_id, model, now, body, note=None):
     entry = (
         f"[LOG_ENTRY type={kind} num={num} session={short_id}]\n"
         f"timestamp: {now}\n"
-        f"model: {model}\n\n"
-        f"{body}\n\n\n"
+        f"model: {model}\n"
     )
+    if note:
+        entry += f"{note}\n"
+    return entry + f"\n{body}\n\n\n"
+
+
+def append_entry(path, kind, num, short_id, model, now, body, note=None):
     with open(path, "a") as fh:
-        fh.write(entry)
+        fh.write(build_entry(kind, num, short_id, model, now, body, note))
+
+
+def insert_response(path, num, short_id, model, now, body, note=None):
+    """
+    Place a recovered RESPONSE in chronological position rather than at EOF.
+
+    A gap being repaired is not always the most recent turn, so appending would put the
+    response after later prompts and misrepresent the order the work happened in.
+    """
+    entry = build_entry("RESPONSE", num, short_id, model, now, body, note)
+    with open(path, "r", errors="replace") as fh:
+        content = fh.read()
+    marker = f"[LOG_ENTRY type=PROMPT num={num + 1} "
+    index = content.find(marker)
+    content = content + entry if index == -1 else content[:index] + entry + content[index:]
+    with open(path, "w") as fh:
+        fh.write(content)
 
 
 def update_frontmatter(path, total, now, model):
@@ -230,6 +309,8 @@ def main():
             return
         path = log_path_for(session_id, now)
         ensure_header(path, session_id, short_id, model, now)
+        # Backstop: fill in the previous turn's response if Stop missed it.
+        reconcile(path, entries, short_id, model)
         num = prompt_count(path) + 1
         if already_logged(path, "PROMPT", num, body):
             return
@@ -237,9 +318,19 @@ def main():
         update_frontmatter(path, num, now, model)
         return
 
+    # The harness may not have flushed the final assistant message to the transcript by
+    # the time Stop fires, so poll briefly rather than logging an empty response.
     body = final_response(entries)
+    for _ in range(30):
+        if body.strip():
+            break
+        time.sleep(0.1)
+        entries = read_transcript(transcript_path)
+        body = final_response(entries)
     if not body.strip():
+        log_error("response mode: no assistant text found after 3s of polling")
         return
+    now = utc_now()
     path = log_path_for(session_id, now)
     ensure_header(path, session_id, short_id, model, now)
     num = max(prompt_count(path), 1)
