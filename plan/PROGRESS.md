@@ -48,7 +48,7 @@ One line per ticked task. Appended, never edited.
 |---|---|---|---|---|
 | — | 2026-09-12 | 00 | capture hook installed, two canaries green, `CAPTURE-TEST.md` written | `89e38f5` |
 | 1 | 2026-09-12 | 01 | scaffold, tokens, lib skeleton, deploy-canary page — build and lint clean | `7de1d0c` |
-| 2 | 2026-09-12 | 03 | header, department nav, footer, skeleton/empty primitives, 404 + error routes | pending |
+| 2 | 2026-09-12 | 03 | header, department nav, footer, skeleton/empty primitives, 404 + error routes | `17e4ff3` |
 
 ## Deferred
 
