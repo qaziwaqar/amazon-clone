@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 // Amazon Ember is not licensed for redistribution. Inter is the closest free face
 // at the same optical size and keeps the header rhythm intact.
@@ -29,7 +31,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to main content
         </a>
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

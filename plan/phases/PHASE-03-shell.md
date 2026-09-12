@@ -1,6 +1,6 @@
 # Phase 03 — App shell
 
-**Status:** TODO · **Depends on:** 01 · **Budget:** ~50m
+**Status:** WIP · **Depends on:** 01 · **Budget:** ~50m
 
 ## Goal
 
@@ -9,21 +9,21 @@ frame every later phase renders inside, so it lands before page work.
 
 ## Exit criteria
 
-- [ ] Header matches the real three-row structure: deliver-to, search, account/orders/cart, then the department nav strip
-- [ ] Search box is keyboard-reachable, submits on Enter, and has a visible focus ring
+- [x] Header matches the real three-row structure: deliver-to, search, account/orders/cart, then the department nav strip
+- [x] Search box is keyboard-reachable, submits on Enter, and has a visible focus ring
 - [ ] Cart badge reflects real item count, server-rendered (no count flash on load)
-- [ ] Nothing scrolls horizontally at 375px
-- [ ] Footer with back-to-top and the four-column link block
+- [x] Nothing scrolls horizontally at 375px
+- [x] Footer with back-to-top and the four-column link block
 
 ## Tasks
 
-- [ ] `src/app/layout.tsx` — fonts, tokens, header, footer, skip-to-content link
-- [ ] `Header` — squid-ink bar, logo, deliver-to (static city), search with category dropdown, account menu, orders, cart with badge
-- [ ] Department nav strip, horizontally scrollable on mobile without a page-level scrollbar
-- [ ] `Footer` — back-to-top, four link columns, locale row
+- [x] `src/app/layout.tsx` — fonts, tokens, header, footer, skip-to-content link
+- [x] `Header` — squid-ink bar, logo, deliver-to (static city), search with category dropdown, account menu, orders, cart with badge
+- [x] Department nav strip, horizontally scrollable on mobile without a page-level scrollbar
+- [x] `Footer` — back-to-top, four link columns, locale row
 - [ ] Mobile header collapse: hamburger, search on its own row
-- [ ] Loading and empty primitives: `Skeleton`, `EmptyState`
-- [ ] `not-found.tsx` and `error.tsx` in Amazon's dog-not-found register
+- [x] Loading and empty primitives: `Skeleton`, `EmptyState`
+- [x] `not-found.tsx` and `error.tsx` in Amazon's dog-not-found register
 
 ## Verify
 
@@ -36,3 +36,17 @@ npm run build
 
 Search *results* (Phase 05), account menu contents beyond links (Phase 08), live
 autocomplete (Phase 05 stretch).
+
+## Carry-over — not done, deliberately visible
+
+- **Cart badge is stubbed at 0.** `src/lib/cart.ts` returns a constant until Phase 07
+  wires the DB-backed cart. The badge is server-rendered, so wiring it is a one-line
+  change to that helper and no header work is redone. The exit criterion stays
+  unticked until it reads real data.
+- **Hamburger drawer not built.** The mobile search already sits on its own row, which
+  was the part that made 375px unusable. The "All" button in the department strip is
+  present but inert. Picked up in Phase 11 if it still matters; a horizontally
+  scrollable strip covers the same need at a fraction of the cost.
+- **Not visually verified.** No browser tool in this session, so responsive behaviour
+  is reasoned from the markup, not observed. Confirm at 375/768/1440 once the app is
+  deployed, before Phase 11 signs it off.
