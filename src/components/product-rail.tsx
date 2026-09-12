@@ -74,17 +74,17 @@ export function ProductRail({
           type="button"
           onClick={() => nudge(-1)}
           aria-label={`Scroll ${title} left`}
-          className="absolute -left-2 top-1/2 hidden h-16 w-8 -translate-y-1/2 place-items-center border border-line bg-surface/90 text-ink hover:bg-surface-sunken sm:grid"
+          className="absolute -start-2 top-1/2 hidden h-16 w-8 -translate-y-1/2 place-items-center border border-line bg-surface/90 text-ink hover:bg-surface-sunken sm:grid"
         >
-          <ChevronIcon className="h-5 w-5 rotate-180" />
+          <ChevronIcon className="h-5 w-5 rotate-180 rtl:rotate-0" />
         </button>
         <button
           type="button"
           onClick={() => nudge(1)}
           aria-label={`Scroll ${title} right`}
-          className="absolute -right-2 top-1/2 hidden h-16 w-8 -translate-y-1/2 place-items-center border border-line bg-surface/90 text-ink hover:bg-surface-sunken sm:grid"
+          className="absolute -end-2 top-1/2 hidden h-16 w-8 -translate-y-1/2 place-items-center border border-line bg-surface/90 text-ink hover:bg-surface-sunken sm:grid"
         >
-          <ChevronIcon className="h-5 w-5" />
+          <ChevronIcon className="h-5 w-5 rtl:rotate-180" />
         </button>
       </div>
     </section>

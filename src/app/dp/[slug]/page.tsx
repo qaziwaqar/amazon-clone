@@ -7,7 +7,7 @@ import {
   getReviews,
 } from "@/lib/queries/products";
 import { departmentBySlug } from "@/lib/data/catalogue";
-import { formatPrice } from "@/lib/utils";
+import { Money } from "@/components/price";
 import { Gallery } from "@/components/pdp/gallery";
 import { VariantSelector } from "@/components/pdp/variant-selector";
 import { BuyBoxActions } from "@/components/pdp/buy-box";
@@ -183,7 +183,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
             {product.soldCount.toLocaleString()}+ bought in the past month
           </p>
           <p className="mt-3 text-xs text-muted">
-            Prices are {formatPrice(price)} for the selected option. No real payment is
+            Prices are <Money cents={price} /> for the selected option. No real payment is
             processed anywhere on this site.
           </p>
         </aside>

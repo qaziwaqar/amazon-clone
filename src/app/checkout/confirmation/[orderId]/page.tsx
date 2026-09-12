@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { getOrder, orderProgress } from "@/lib/orders";
-import { formatPrice } from "@/lib/utils";
+import { Money } from "@/components/price";
 
 export const metadata = { title: "Order placed" };
 
@@ -36,7 +36,7 @@ export default async function ConfirmationPage({
           {order.addressLine}
         </p>
         <p className="mt-1 text-lg font-bold text-price">
-          Order total: {formatPrice(order.totalCents)}
+          Order total: <Money cents={order.totalCents} />
         </p>
 
         <ul className="mt-6 grid gap-4 sm:grid-cols-2">

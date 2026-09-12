@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCart } from "@/lib/cart";
 import { getUser } from "@/lib/auth";
-import { formatPrice } from "@/lib/utils";
+import { Money } from "@/components/price";
 import { TAX_RATE } from "@/lib/orders";
 import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -53,7 +53,7 @@ export default async function CheckoutPage() {
                     <p className="line-clamp-2 text-sm">{line.product.title}</p>
                     <p className="text-xs text-muted">Qty: {line.qty}</p>
                     <p className="text-sm font-bold text-price">
-                      {formatPrice(line.lineTotalCents)}
+                      <Money cents={line.lineTotalCents} />
                     </p>
                   </div>
                 </li>
@@ -71,14 +71,14 @@ export default async function CheckoutPage() {
 
       <h2 className="text-lg font-bold">Order Summary</h2>
           <dl className="mt-2 space-y-1 text-sm">
-            <Row label={`Items (${cart.count})`} value={formatPrice(cart.subtotalCents)} />
+            <Row label={`Items (${cart.count})`} value={<Money cents={cart.subtotalCents} />} />
             <Row label="Shipping & handling" value="Selected at step 2" />
-            <Row label="Estimated tax" value={formatPrice(taxCents)} />
+            <Row label="Estimated tax" value={<Money cents={taxCents} />} />
           </dl>
           <hr className="my-3 border-line" />
           <p className="flex justify-between text-lg font-bold text-price">
             <span>Order total</span>
-            <span>{formatPrice(totalCents)}</span>
+            <span><Money cents={totalCents} /></span>
           </p>
       <p className="mt-1 text-xs text-muted">
         Shipping is added to the total when you choose a speed. The server recomputes
@@ -94,7 +94,7 @@ export default async function CheckoutPage() {
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex justify-between">
       <dt className="text-muted">{label}</dt>

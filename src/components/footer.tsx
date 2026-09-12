@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./logo";
+import { getDict } from "@/lib/i18n/server";
 
 const COLUMNS = [
   {
@@ -20,14 +21,16 @@ const COLUMNS = [
   },
 ];
 
-export function Footer() {
+export async function Footer() {
+  const dict = await getDict();
+
   return (
     <footer className="mt-auto">
       <a
         href="#main"
         className="block bg-nav-hover py-4 text-center text-sm text-white hover:bg-[#485769]"
       >
-        Back to top
+        {dict.backToTop}
       </a>
 
       <div className="bg-nav text-white">

@@ -2,7 +2,8 @@ import { ProductImage } from "@/components/product-image";
 import Link from "next/link";
 import { getCart } from "@/lib/cart";
 import { getUser } from "@/lib/auth";
-import { formatPrice } from "@/lib/utils";
+import { getDict } from "@/lib/i18n/server";
+import { Money } from "@/components/price";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { getBestSellers } from "@/lib/queries/products";
 import { LineControls } from "@/components/cart/line-controls";
@@ -14,13 +15,13 @@ import { EmptyState } from "@/components/ui/empty-state";
 export const metadata = { title: "Shopping Cart" };
 
 export default async function CartPage() {
-  const [cart, user] = await Promise.all([getCart(), getUser()]);
+  const [cart, user, dict] = await Promise.all([getCart(), getUser(), getDict()]);
 
   return (
     <main id="main" className="mx-auto w-full max-w-[1500px] px-4 py-4">
       {cart.lines.length === 0 ? (
         <EmptyState
-          title="Your Amazon Cart is empty"
+          title={dict.emptyCart}
           body="Your shopping cart lives to serve. Give it purpose — fill it with books, electronics, videos, etc. and make it happy."
           actionLabel="Continue shopping"
         />
@@ -87,7 +88,7 @@ export default async function CartPage() {
 
             <p className="pt-4 text-right text-lg">
               Subtotal ({cart.count} {cart.count === 1 ? "item" : "items"}):{" "}
-              <span className="font-bold">{formatPrice(cart.subtotalCents)}</span>
+              <span className="font-bold"><Money cents={cart.subtotalCents} /></span>
             </p>
           </section>
 
@@ -101,7 +102,7 @@ export default async function CartPage() {
                 <p className="text-sm">
                   Add{" "}
                   <span className="font-bold">
-                    {formatPrice(cart.remainingForFreeShipping)}
+                    <Money cents={cart.remainingForFreeShipping} />
                   </span>{" "}
                   of eligible items to your order to qualify for FREE Shipping.
                 </p>
@@ -119,7 +120,7 @@ export default async function CartPage() {
 
             <p className="mt-4 text-lg">
               Subtotal ({cart.count} {cart.count === 1 ? "item" : "items"}):{" "}
-              <span className="font-bold">{formatPrice(cart.subtotalCents)}</span>
+              <span className="font-bold"><Money cents={cart.subtotalCents} /></span>
             </p>
 
             {/* Checkout requires an account, so say so here rather than bouncing
@@ -128,11 +129,11 @@ export default async function CartPage() {
               href={user ? "/checkout" : "/signin?next=/checkout"}
               className="mt-4 block rounded-full border border-cta-border bg-cta py-2 text-center text-sm hover:bg-cta-hover"
             >
-              {user ? "Proceed to checkout" : "Sign in to checkout"}
+              {user ? dict.proceedToCheckout : dict.signInToCheckout}
             </Link>
             {!user && (
               <p className="mt-2 text-center text-xs text-muted">
-                Your cart is kept while you sign in.
+                {dict.cartKept}
               </p>
             )}
           </aside>

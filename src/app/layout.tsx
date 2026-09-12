@@ -4,6 +4,9 @@ import "./globals.css";
 import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/constants";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { LocaleProvider } from "@/components/locale-provider";
+import { getPrefs } from "@/lib/i18n/server";
+import { DICTIONARIES } from "@/lib/i18n/dictionaries";
 
 // Amazon Ember is not licensed for redistribution. Inter is the closest free face
 // at the same optical size and keeps the header rhythm intact.
@@ -22,9 +25,11 @@ export const metadata: Metadata = {
   description: SITE_TAGLINE,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const { locale, currency, dir } = await getPrefs();
+
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
+    <html lang={locale} dir={dir} className={`${inter.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <a
           href="#main"
@@ -32,9 +37,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to main content
         </a>
-        <Header />
-        {children}
-        <Footer />
+        <LocaleProvider value={{ locale, currency, dict: DICTIONARIES[locale] }}>
+          <Header />
+          {children}
+          <Footer />
+        </LocaleProvider>
       </body>
     </html>
   );

@@ -13,7 +13,13 @@ import type { DeliveryLocation } from "@/lib/location";
  * resolved to a place name in the browser and only that name is stored; the latitude
  * and longitude never reach the server.
  */
-export function LocationDialog({ current }: { current: DeliveryLocation }) {
+export function LocationDialog({
+  current,
+  label,
+}: {
+  current: DeliveryLocation;
+  label: string;
+}) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [zip, setZip] = useState("");
@@ -86,7 +92,7 @@ export function LocationDialog({ current }: { current: DeliveryLocation }) {
       >
         <PinIcon className="mt-2.5 h-4 w-4" />
         <span className="leading-tight">
-          <span className="block text-xs text-white/70">Deliver to</span>
+          <span className="block text-xs text-white/70">{label}</span>
           <span className="block max-w-40 truncate text-sm font-bold">
             {current.label} {current.zip}
           </span>

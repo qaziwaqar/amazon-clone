@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { getOrders, orderProgress } from "@/lib/orders";
-import { formatPrice } from "@/lib/utils";
+import { Money } from "@/components/price";
 import { EmptyState } from "@/components/ui/empty-state";
 import { BuyAgainButton } from "@/components/orders/buy-again";
 
@@ -40,7 +40,7 @@ export default async function OrdersPage() {
                   </div>
                   <div>
                     <dt className="text-muted">TOTAL</dt>
-                    <dd>{formatPrice(order.totalCents)}</dd>
+                    <dd><Money cents={order.totalCents} /></dd>
                   </div>
                   <div>
                     <dt className="text-muted">SHIP TO</dt>
@@ -71,7 +71,7 @@ export default async function OrdersPage() {
                             {item.title}
                           </Link>
                           <p className="text-xs text-muted">
-                            Qty {item.qty} · {formatPrice(item.unitPriceCents)} each
+                            Qty {item.qty} · <Money cents={item.unitPriceCents} /> each
                           </p>
                           <div className="mt-2 w-40">
                             <BuyAgainButton productId={item.productId} />

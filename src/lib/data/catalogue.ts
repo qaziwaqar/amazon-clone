@@ -11,6 +11,7 @@ export const DEPARTMENTS: Department[] = [
   { name: "Sports & Outdoors", slug: "sports-outdoors", blurb: "Training gear, camping and recovery" },
   { name: "Beauty", slug: "beauty", blurb: "Skincare, haircare and tools" },
   { name: "Toys & Games", slug: "toys-games", blurb: "Building sets, board games and puzzles" },
+  { name: "Gift Cards", slug: "gift-cards", blurb: "Digital gift cards in fixed denominations" },
 ];
 
 type TypeSpec = {
@@ -602,6 +603,9 @@ function buildCatalogue(): Product[] {
 
   for (const dept of DEPARTMENTS) {
     const spec = CATALOGUE_SPEC[dept.slug];
+    // Gift cards are appended separately with fixed denominations, so they have no
+    // generator spec. Any department without one is simply not generated here.
+    if (!spec) continue;
     const perDept = 75;
 
     for (let i = 0; i < perDept; i++) {
@@ -660,11 +664,72 @@ function buildCatalogue(): Product[] {
   return products;
 }
 
+/**
+ * Gift cards.
+ *
+ * Real products rather than a marketing page: they sit in the catalogue, so they are
+ * searchable, addable to the cart and orderable through exactly the same path as
+ * everything else. Fixed denominations, never discounted, always in stock.
+ */
+const GIFT_CARD_DESIGNS = [
+  { name: "Birthday", keyword: "birthday,gift" },
+  { name: "Thank You", keyword: "giftcard" },
+  { name: "Congratulations", keyword: "celebration,gift" },
+] as const;
+
+const GIFT_CARD_VALUES = [2500, 5000, 10000, 20000];
+
+function giftCards(): Product[] {
+  const out: Product[] = [];
+  let n = 0;
+
+  for (const design of GIFT_CARD_DESIGNS) {
+    for (const value of GIFT_CARD_VALUES) {
+      const id = `g${String(++n).padStart(3, "0")}`;
+      const next = rng(hash(id));
+      const title = `Amazon Gift Card — ${design.name} — $${value / 100}`;
+
+      out.push({
+        id,
+        slug: `${slugify(title)}-${id}`,
+        title,
+        brand: "Amazon",
+        department: "gift-cards",
+        priceCents: value,
+        listPriceCents: value,
+        rating: 4.8,
+        reviewCount: intBetween(next, 400, 9000),
+        prime: true,
+        stock: 9999,
+        images: imagesFor(id, 2, design.keyword, hash(id)),
+        bullets: [
+          "Delivered by email within minutes of the order being placed",
+          "No expiry date and no fees",
+          "Redeemable against anything in the catalogue",
+        ],
+        description: `An Amazon Gift Card in a ${design.name} design, worth $${value / 100}. In this rebuild no card is actually issued.`,
+        specs: {
+          Denomination: `$${value / 100}`,
+          Design: design.name,
+          Delivery: "Email",
+          Expiry: "None",
+          Brand: "Amazon",
+        },
+        variants: [],
+        addedDaysAgo: 30,
+        soldCount: intBetween(next, 2000, 40000),
+      });
+    }
+  }
+
+  return out;
+}
+
 let cached: Product[] | null = null;
 
 /** Built once per process, then reused. Deterministic, so caching is safe. */
 export function allProducts(): Product[] {
-  if (!cached) cached = buildCatalogue();
+  if (!cached) cached = [...buildCatalogue(), ...giftCards()];
   return cached;
 }
 

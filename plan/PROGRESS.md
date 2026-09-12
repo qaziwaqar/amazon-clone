@@ -99,3 +99,20 @@ Verified over HTTP: signed out, `/checkout` and `/checkout/confirmation/*` both 
 `/signin?next=…`, and a direct POST of the placement action is refused. Signed in as the
 demo account, the full path still completes — 303 to the confirmation page, thank-you
 rendered, and the new order listed on `/orders`.
+
+## Reported-issue pass 3 — 2026-09-12
+
+Compared against a screenshot of the real header.
+
+| # | Issue | Fix |
+|---|---|---|
+| 7 | No language support | Six-locale chrome dictionary, cookie-backed, `lang`/`dir` on `<html>`, RTL for Arabic with mirrored carousel and rail controls. Plus eight currencies that actually reprice the whole site, zero-decimal handling for PKR and INR, and fixed demo rates stated in the picker |
+| 8 | Cart badge not aligned to the icon | Count now sits over the icon's top-right corner instead of centred above it, so it reads as part of the cart rather than a separate element |
+| 9 | Nav missing Deals, Coupons, Browsing History, Gift Cards etc. | Six new destinations, each a working page: `/deals`, `/coupons`, `/gift-cards`, `/browsing-history`, `/buy-again`, `/help`. Gift cards are real catalogue products, so they add to the cart and check out through the ordinary path |
+
+Prime Video, Registry and Sell are still absent on purpose: they are on the cut list,
+and a dead link is worse than an honest omission.
+
+Verified over HTTP: every new route 200 (`/buy-again` correctly 307s to sign-in when
+signed out); `de`/`ar`/`zh` chrome translated; `<html lang>` and `dir` correct; and a
+$25 gift card renders as 23,00 €, ‏91.75 د.إ‏, ¥181.00 and PKR 6,950.

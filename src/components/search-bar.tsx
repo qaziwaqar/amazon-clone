@@ -1,12 +1,15 @@
 import { SEARCH_SCOPES } from "@/lib/departments";
 import { SearchIcon } from "./icons";
+import { getDict } from "@/lib/i18n/server";
 
 /**
  * Plain GET form, no JavaScript. Search works with JS disabled and on first paint
  * before hydration — on the single highest-traffic surface of the site, that matters
  * more than a fancier control. Phase 05 layers a suggestions dropdown on top.
  */
-export function SearchBar({ defaultQuery = "" }: { defaultQuery?: string }) {
+export async function SearchBar({ defaultQuery = "" }: { defaultQuery?: string }) {
+  const dict = await getDict();
+
   return (
     <form
       action="/s"
@@ -15,7 +18,7 @@ export function SearchBar({ defaultQuery = "" }: { defaultQuery?: string }) {
       className="flex h-10 w-full overflow-hidden rounded-md focus-within:ring-3 focus-within:ring-accent"
     >
       <label htmlFor="search-scope" className="sr-only">
-        Search in department
+        {dict.searchIn}
       </label>
       <select
         id="search-scope"
@@ -31,21 +34,21 @@ export function SearchBar({ defaultQuery = "" }: { defaultQuery?: string }) {
       </select>
 
       <label htmlFor="search-input" className="sr-only">
-        Search Amazon
+        {dict.searchPlaceholder}
       </label>
       <input
         id="search-input"
         name="k"
         type="search"
         defaultValue={defaultQuery}
-        placeholder="Search Amazon"
+        placeholder={dict.searchPlaceholder}
         autoComplete="off"
         className="h-full min-w-0 flex-1 bg-white px-3 text-sm text-ink outline-none"
       />
 
       <button
         type="submit"
-        aria-label="Go"
+        aria-label={dict.go}
         className="grid h-full w-11 shrink-0 place-items-center bg-accent text-squid hover:bg-accent-hover"
       >
         <SearchIcon className="h-5 w-5" />

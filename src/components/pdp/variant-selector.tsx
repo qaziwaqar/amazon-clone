@@ -2,7 +2,8 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Variant } from "@/lib/data/types";
-import { formatPrice } from "@/lib/utils";
+import { formatMoney } from "@/lib/i18n/currency";
+import { useLocale } from "@/components/locale-provider";
 
 /**
  * Variant lives in the URL so the selection survives a reload and can be linked to.
@@ -21,6 +22,7 @@ export function VariantSelector({
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
+  const { currency, locale } = useLocale();
 
   if (variants.length === 0) return null;
 
@@ -66,7 +68,7 @@ export function VariantSelector({
               {v.label}
               {v.priceDelta > 0 && (
                 <span className="ml-2 text-xs text-muted">
-                  +{formatPrice(v.priceDelta)}
+                  +{formatMoney(v.priceDelta, currency, locale)}
                 </span>
               )}
             </button>
@@ -74,7 +76,7 @@ export function VariantSelector({
         })}
       </div>
       <p className="mt-1 text-xs text-muted">
-        Price shown is for the selected option ({formatPrice(basePrice)} base).
+        Price shown is for the selected option ({formatMoney(basePrice, currency, locale)} base).
       </p>
     </fieldset>
   );

@@ -85,17 +85,17 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
         type="button"
         onClick={() => go(-1)}
         aria-label="Previous slide"
-        className="absolute left-0 top-1/3 grid h-20 w-12 place-items-center text-ink/60 hover:bg-black/5 hover:text-ink"
+        className="absolute start-0 top-1/3 grid h-20 w-12 place-items-center text-ink/60 hover:bg-black/5 hover:text-ink"
       >
-        <ChevronIcon className="h-8 w-8 rotate-180" />
+        <ChevronIcon className="h-8 w-8 rotate-180 rtl:rotate-0" />
       </button>
       <button
         type="button"
         onClick={() => go(1)}
         aria-label="Next slide"
-        className="absolute right-0 top-1/3 grid h-20 w-12 place-items-center text-ink/60 hover:bg-black/5 hover:text-ink"
+        className="absolute end-0 top-1/3 grid h-20 w-12 place-items-center text-ink/60 hover:bg-black/5 hover:text-ink"
       >
-        <ChevronIcon className="h-8 w-8" />
+        <ChevronIcon className="h-8 w-8 rtl:rotate-180" />
       </button>
 
       <div className="absolute bottom-28 left-1/2 flex -translate-x-1/2 gap-2">

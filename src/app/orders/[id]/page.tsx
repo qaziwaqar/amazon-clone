@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { getOrder, orderProgress, SHIPPING } from "@/lib/orders";
-import { formatPrice } from "@/lib/utils";
+import { Money } from "@/components/price";
 
 export const metadata = { title: "Order details" };
 
@@ -76,7 +76,7 @@ export default async function OrderDetailPage({
                   <p className="text-xs text-muted">Qty {item.qty}</p>
                 </div>
                 <p className="shrink-0 text-sm font-bold text-price">
-                  {formatPrice(item.unitPriceCents * item.qty)}
+                  <Money cents={item.unitPriceCents * item.qty} />
                 </p>
               </li>
             ))}
@@ -99,14 +99,14 @@ export default async function OrderDetailPage({
           <section className="rounded border border-line bg-surface p-5">
             <h2 className="text-base font-bold">Order summary</h2>
             <dl className="mt-2 space-y-1 text-sm">
-              <Row label="Item(s) subtotal" value={formatPrice(order.subtotalCents)} />
-              <Row label={SHIPPING[order.speed].label} value={formatPrice(order.shippingCents)} />
-              <Row label="Estimated tax" value={formatPrice(order.taxCents)} />
+              <Row label="Item(s) subtotal" value={<Money cents={order.subtotalCents} />} />
+              <Row label={SHIPPING[order.speed].label} value={<Money cents={order.shippingCents} />} />
+              <Row label="Estimated tax" value={<Money cents={order.taxCents} />} />
             </dl>
             <hr className="my-2 border-line" />
             <p className="flex justify-between font-bold text-price">
               <span>Grand total</span>
-              <span>{formatPrice(order.totalCents)}</span>
+              <span><Money cents={order.totalCents} /></span>
             </p>
           </section>
         </aside>
@@ -115,7 +115,7 @@ export default async function OrderDetailPage({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex justify-between">
       <dt className="text-muted">{label}</dt>

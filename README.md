@@ -93,7 +93,13 @@ that sleep after inactivity: a 50-second cold start makes the site look broken.
 | Route | What is there |
 |---|---|
 | `/` | Hero carousel, category tiles, deals, best-seller and browsing rails |
-| Header | "All" department drawer, delivery-location picker with optional GPS |
+| Header | "All" department drawer, delivery-location picker with optional GPS, language and currency picker |
+| `/deals` | Genuinely discounted stock, deepest discount first |
+| `/coupons` | Savings of 20%+, grouped by department |
+| `/gift-cards` | Gift cards as real catalogue items — they add to the cart and check out normally |
+| `/browsing-history` | Products you opened, with a clear-history control |
+| `/buy-again` | Everything ordered before, de-duplicated. Requires sign-in |
+| `/help` | Customer service: plain answers about what is real here and what is simulated |
 | `/s` | Search with department, price, rating, brand and Prime facets; five sorts; pagination |
 | `/dp/[slug]` | Gallery with lens zoom, variants, buy box, specs, reviews with histogram, related items |
 | `/cart` | Quantity, remove, save for later, free-shipping progress |
@@ -102,8 +108,26 @@ that sleep after inactivity: a 50-second cold start makes the site look broken.
 | `/orders`, `/orders/[id]` | Order history, delivery progress, buy again |
 | `/account` | Account hub |
 
-600 products across 8 departments, generated deterministically — the same catalogue on
-every machine and every deploy, so deep links do not rot.
+600 products across 8 departments, plus gift cards, generated deterministically — the
+same catalogue on every machine and every deploy, so deep links do not rot.
+
+### Language and currency
+
+The flag control in the header switches both, and both take effect site-wide:
+
+- **Six languages** — English, español, Deutsch, português, العربية, 中文. Arabic
+  switches the document to right-to-left, including the carousel and rail controls.
+- **Eight currencies** — USD, EUR, GBP, PKR, AED, INR, BRL, CNY. Every price on the
+  site reprices, including the cart, checkout totals and order history. Currencies with
+  no minor unit (PKR, INR) drop the decimals rather than printing `.00`.
+
+Two deliberate limits, both stated in the picker itself:
+
+- **The interface is translated; product listings are not.** A seller's title stays as
+  the seller wrote it, which is how the real site behaves.
+- **Conversion uses fixed demo rates, not live ones.** A storefront that silently
+  reprices between the product page and checkout because a rate moved is worse than one
+  that is honestly static.
 
 ---
 
@@ -135,7 +159,9 @@ Stated plainly rather than buried:
 
 Named as product decisions, not gaps: Seller Central, Prime Video/Music, real payment
 rails, ML recommendations (the "also viewed" rail is a stated heuristic), i18n, writing
-reviews, returns and refunds, carrier tracking.
+reviews, returns and refunds, carrier tracking. The header nav omits Prime Video,
+Registry and Sell for the same reason — a link to a page that does nothing is worse
+than no link.
 
 ---
 

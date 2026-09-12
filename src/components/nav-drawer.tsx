@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CloseIcon, MenuIcon } from "./icons";
 import { signOut } from "@/app/actions/auth";
+import type { Dict } from "@/lib/i18n/dictionaries";
 
 type Department = { name: string; slug: string };
 
@@ -14,9 +15,11 @@ type Department = { name: string; slug: string };
 export function NavDrawer({
   departments,
   userName,
+  dict,
 }: {
   departments: readonly Department[];
   userName?: string;
+  dict: Dict;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -43,7 +46,7 @@ export function NavDrawer({
         className="flex shrink-0 items-center gap-1 rounded-sm border border-transparent px-2 py-1 font-bold hover:border-white"
       >
         <MenuIcon className="h-4 w-4" />
-        All
+        {dict.all}
       </button>
 
       {open && (
@@ -54,12 +57,12 @@ export function NavDrawer({
           <div
             role="dialog"
             aria-modal="true"
-            aria-label="Browse departments"
+            aria-label={dict.browseDepartments}
             className="flex h-full w-[85%] max-w-sm flex-col bg-surface text-ink"
           >
             <div className="flex items-center justify-between bg-squid px-5 py-4 text-white">
               <p className="text-lg font-bold">
-                Hello, {userName ?? "sign in"}
+                {userName ? `${dict.hello}, ${userName}` : dict.helloSignIn}
               </p>
               <button type="button" onClick={() => setOpen(false)} aria-label="Close menu">
                 <CloseIcon className="h-6 w-6" />
@@ -67,7 +70,7 @@ export function NavDrawer({
             </div>
 
             <nav className="flex-1 overflow-y-auto py-2">
-              <Group title="Shop by Department">
+              <Group title={dict.shopByDepartment}>
                 {departments.map((d) => (
                   <Item key={d.slug} href={`/s?i=${d.slug}`} onNavigate={() => setOpen(false)}>
                     {d.name}
@@ -75,15 +78,15 @@ export function NavDrawer({
                 ))}
               </Group>
 
-              <Group title="Your Account">
-                <Item href="/account" onNavigate={() => setOpen(false)}>Your Account</Item>
-                <Item href="/orders" onNavigate={() => setOpen(false)}>Your Orders</Item>
-                <Item href="/cart" onNavigate={() => setOpen(false)}>Your Cart</Item>
+              <Group title={dict.yourAccount}>
+                <Item href="/account" onNavigate={() => setOpen(false)}>{dict.yourAccount}</Item>
+                <Item href="/orders" onNavigate={() => setOpen(false)}>{dict.yourOrders}</Item>
+                <Item href="/cart" onNavigate={() => setOpen(false)}>{dict.yourCart}</Item>
               </Group>
 
-              <Group title="Help & Settings">
-                <Item href="/s?sort=newest" onNavigate={() => setOpen(false)}>New arrivals</Item>
-                <Item href="/s?sort=rating" onNavigate={() => setOpen(false)}>Top rated</Item>
+              <Group title={dict.helpSettings}>
+                <Item href="/s?sort=newest" onNavigate={() => setOpen(false)}>{dict.newArrivals}</Item>
+                <Item href="/s?sort=rating" onNavigate={() => setOpen(false)}>{dict.topRated}</Item>
                 {userName ? (
                   <li>
                     <form action={signOut}>
@@ -91,12 +94,12 @@ export function NavDrawer({
                         type="submit"
                         className="w-full px-5 py-2.5 text-left text-sm hover:bg-surface-sunken"
                       >
-                        Sign out
+                        {dict.signOut}
                       </button>
                     </form>
                   </li>
                 ) : (
-                  <Item href="/signin" onNavigate={() => setOpen(false)}>Sign in</Item>
+                  <Item href="/signin" onNavigate={() => setOpen(false)}>{dict.signIn}</Item>
                 )}
               </Group>
             </nav>

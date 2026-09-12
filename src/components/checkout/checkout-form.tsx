@@ -3,7 +3,8 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { placeOrder, type CheckoutState } from "@/app/actions/checkout";
-import { formatPrice } from "@/lib/utils";
+import { formatMoney } from "@/lib/i18n/currency";
+import { useLocale } from "@/components/locale-provider";
 
 const SPEEDS = [
   { value: "standard", label: "FREE Standard Shipping", note: "Arrives in 5 days", cents: 0 },
@@ -29,6 +30,7 @@ export function CheckoutForm({
   summary: React.ReactNode;
 }) {
   const [state, formAction] = useActionState<CheckoutState, FormData>(placeOrder, {});
+  const { currency, locale } = useLocale();
 
   return (
     <form action={formAction} className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
@@ -79,7 +81,7 @@ export function CheckoutForm({
                 <span>
                   <span className="block text-sm font-bold">
                     {s.label}
-                    {s.cents > 0 && ` — ${formatPrice(s.cents)}`}
+                    {s.cents > 0 && ` — ${formatMoney(s.cents, currency, locale)}`}
                   </span>
                   <span className="block text-xs text-muted">{s.note}</span>
                 </span>
