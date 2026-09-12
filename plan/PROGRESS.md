@@ -8,7 +8,7 @@ iteration_budget: 45        # hard cap; exhausting it stops the loop (LOOP.md #2
 phases_total: 13
 phases_done: 1
 consecutive_no_progress: 0
-status: RUNNING             # RUNNING | STOP:complete | STOP:budget | STOP:blocked | STOP:no-progress | STOP:stuck | STOP:dirty
+status: STOP:blocked             # RUNNING | STOP:complete | STOP:budget | STOP:blocked | STOP:no-progress | STOP:stuck | STOP:dirty
 ```
 
 ## Phase board
@@ -28,6 +28,14 @@ status: RUNNING             # RUNNING | STOP:complete | STOP:budget | STOP:block
 | 10 | [Orders](phases/PHASE-10-orders.md) | TODO | — |
 | 11 | [Polish](phases/PHASE-11-polish.md) | TODO | — |
 | 12 | [Hand-in](phases/PHASE-12-handin.md) | TODO | needs live URL + repo URL + walkthrough recorded by human |
+
+## Why the loop stopped
+
+`LOOP.md` stop condition #3 — every remaining phase is blocked, directly or by
+dependency. Phase 02 needs `DATABASE_URL`; Phases 04-10 all read the catalogue Phase 02
+seeds; Phases 11-12 sit behind those. Phase 01's last two tasks need a GitHub repo and a
+Vercel login. Clearing blockers 1-3 below restarts the loop at Phase 02 and unblocks
+everything downstream in one move.
 
 ## Open human blockers
 
