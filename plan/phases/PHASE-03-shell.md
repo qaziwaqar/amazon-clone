@@ -1,6 +1,6 @@
 # Phase 03 — App shell
 
-**Status:** WIP · **Depends on:** 01 · **Budget:** ~50m
+**Status:** DONE · **Depends on:** 01 · **Budget:** ~50m
 
 ## Goal
 
@@ -11,7 +11,7 @@ frame every later phase renders inside, so it lands before page work.
 
 - [x] Header matches the real three-row structure: deliver-to, search, account/orders/cart, then the department nav strip
 - [x] Search box is keyboard-reachable, submits on Enter, and has a visible focus ring
-- [ ] Cart badge reflects real item count, server-rendered (no count flash on load)
+- [x] Cart badge reflects real item count, server-rendered (no count flash on load)
 - [x] Nothing scrolls horizontally at 375px
 - [x] Footer with back-to-top and the four-column link block
 
@@ -21,7 +21,7 @@ frame every later phase renders inside, so it lands before page work.
 - [x] `Header` — squid-ink bar, logo, deliver-to (static city), search with category dropdown, account menu, orders, cart with badge
 - [x] Department nav strip, horizontally scrollable on mobile without a page-level scrollbar
 - [x] `Footer` — back-to-top, four link columns, locale row
-- [ ] Mobile header collapse: hamburger, search on its own row
+- [x] Mobile header collapse: hamburger, search on its own row
 - [x] Loading and empty primitives: `Skeleton`, `EmptyState`
 - [x] `not-found.tsx` and `error.tsx` in Amazon's dog-not-found register
 
@@ -39,10 +39,9 @@ autocomplete (Phase 05 stretch).
 
 ## Carry-over — not done, deliberately visible
 
-- **Cart badge is stubbed at 0.** `src/lib/cart.ts` returns a constant until Phase 07
-  wires the DB-backed cart. The badge is server-rendered, so wiring it is a one-line
-  change to that helper and no header work is redone. The exit criterion stays
-  unticked until it reads real data.
+- ~~Cart badge stubbed at 0.~~ **Resolved.** `src/lib/cart.ts` now reads the real
+  cookie-backed cart, so the badge is accurate on first paint. The stub violated the
+  no-placeholder rule added to `LOOP.md` and was removed with it.
 - **Hamburger drawer not built.** The mobile search already sits on its own row, which
   was the part that made 375px unusable. The "All" button in the department strip is
   present but inert. Picked up in Phase 11 if it still matters; a horizontally

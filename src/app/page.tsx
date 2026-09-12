@@ -1,117 +1,162 @@
-import { splitPrice } from "@/lib/utils";
+import { DEPARTMENTS } from "@/lib/data/catalogue";
+import {
+  getBestSellers,
+  getDeals,
+  getNewArrivals,
+  searchProducts,
+} from "@/lib/queries/products";
+import { readRecentlyViewed } from "@/lib/recently-viewed";
+import { HeroCarousel, type Slide } from "@/components/hero-carousel";
+import { CategoryCard } from "@/components/category-card";
+import { ProductRail } from "@/components/product-rail";
 
-/**
- * Deploy canary.
- *
- * Phase 01 exists to prove the pipeline works before any feature does, so this
- * page's only job is to be visibly, verifiably *something* on the live URL. It
- * renders the design tokens, which means a broken Tailwind build or a missing
- * font shows up here rather than three phases later. Phase 04 replaces it.
- */
+export const metadata = {
+  title: "Amazon.com: Online Shopping for Electronics, Apparel, Computers, Books & more",
+};
 
-const CHROME = [
-  ["--color-squid", "squid", "top nav"],
-  ["--color-nav", "nav", "department strip"],
-  ["--color-footer", "footer", "footer base"],
-] as const;
+const SLIDE_TINT = [
+  "linear-gradient(120deg,#7b2ff7,#f107a3)",
+  "linear-gradient(120deg,#0f3443,#34e89e)",
+  "linear-gradient(120deg,#232526,#414345)",
+  "linear-gradient(120deg,#ff8008,#ffc837)",
+];
 
-const ACTION = [
-  ["--color-accent", "accent", "search button"],
-  ["--color-cta", "cta", "add to cart"],
-  ["--color-buy", "buy", "buy now"],
-] as const;
-
-const SEMANTIC = [
-  ["--color-price", "price", "price red"],
-  ["--color-link", "link", "link teal"],
-  ["--color-success", "success", "in stock"],
-  ["--color-star", "star", "rating star"],
-] as const;
-
-function Swatch({ token, name, use }: { token: string; name: string; use: string }) {
-  return (
-    <div className="overflow-hidden rounded border border-line bg-surface">
-      <div className="h-16" style={{ background: `var(${token})` }} />
-      <div className="px-3 py-2">
-        <div className="text-sm font-medium">{name}</div>
-        <div className="text-xs text-muted">{use}</div>
-      </div>
-    </div>
-  );
+function cardItems(slug: string, count = 4) {
+  return getBestSellers(slug, count).map((product) => ({
+    product,
+    label: product.title.split(" ").slice(-2).join(" "),
+  }));
 }
 
-function Group({
-  title,
-  items,
-}: {
-  title: string;
-  items: readonly (readonly [string, string, string])[];
-}) {
-  return (
-    <section className="mt-8">
-      <h2 className="mb-3 text-lg font-bold">{title}</h2>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {items.map(([token, name, use]) => (
-          <Swatch key={token} token={token} name={name} use={use} />
-        ))}
-      </div>
-    </section>
-  );
-}
+export default async function Home() {
+  const recentlyViewed = await readRecentlyViewed();
+  const deals = getDeals(16);
+  const newArrivals = getNewArrivals(16);
+  const topBooks = searchProducts({ i: "books", sort: "rating" }).items;
+  const topRated = searchProducts({ sort: "rating" }).items;
 
-export default function Home() {
-  const { whole, fraction } = splitPrice(2499);
+  const slides: Slide[] = DEPARTMENTS.slice(0, 4).map((d, i) => ({
+    title: `${d.name}: everything for the season`,
+    subtitle: d.blurb,
+    href: `/s?i=${d.slug}`,
+    image: getBestSellers(d.slug, 1)[0].images[0],
+    tint: SLIDE_TINT[i],
+  }));
+
+  // Seeded "browsing history" on a first visit. A home page that is empty until you
+  // have clicked something tells a first-time visitor nothing about the catalogue.
+  const viewed = recentlyViewed.length > 0 ? recentlyViewed : topRated.slice(0, 16);
 
   return (
-    <main id="main" className="mx-auto w-full max-w-5xl px-4 py-10">
-      <div className="rounded bg-squid px-5 py-4 text-white">
-        <h1 className="text-xl font-bold">Foundation deployed</h1>
-        <p className="mt-1 text-sm text-white/70">
-          Phase 01 of 12. Pipeline is live before any feature exists — a deploy that
-          breaks at hour 22 is the thing that actually sinks a build like this.
-        </p>
-      </div>
+    <main id="main" className="pb-10">
+      <HeroCarousel slides={slides} />
 
-      <Group title="Chrome" items={CHROME} />
-      <Group title="Actions" items={ACTION} />
-      <Group title="Semantic" items={SEMANTIC} />
-
-      <section className="mt-10 rounded border border-line bg-surface p-5">
-        <h2 className="mb-4 text-lg font-bold">Primitives</h2>
-
-        <div className="flex flex-wrap items-center gap-4">
-          <span className="text-price">
-            <span className="align-super text-xs">$</span>
-            <span className="text-2xl font-medium">{whole}</span>
-            <span className="align-super text-xs">{fraction}</span>
-          </span>
-
-          <button
-            type="button"
-            className="rounded-full border border-cta-border bg-cta px-5 py-1.5 text-sm hover:bg-cta-hover"
-          >
-            Add to Cart
-          </button>
-
-          <button
-            type="button"
-            className="rounded-full border border-buy-border bg-buy px-5 py-1.5 text-sm hover:bg-buy-hover"
-          >
-            Buy Now
-          </button>
-
-          <a href="#main" className="text-sm text-link hover:text-link-hover hover:underline">
-            A link, in Amazon teal
-          </a>
-
-          <span className="text-sm text-success">In Stock</span>
+      {/* Pulled up over the hero, as on the real site. */}
+      <div className="relative z-10 mx-auto -mt-24 max-w-[1500px] px-4 sm:-mt-32">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <CategoryCard
+            title="Get your game on"
+            items={cardItems("toys-games")}
+            href="/s?i=toys-games"
+          />
+          <CategoryCard
+            title="Top categories in Kitchen appliances"
+            items={cardItems("home-kitchen")}
+            href="/s?i=home-kitchen"
+            cta="Explore all products in Kitchen"
+          />
+          <CategoryCard
+            title="Easy updates for elevated spaces"
+            items={cardItems("beauty")}
+            href="/s?i=beauty"
+            cta="See more"
+          />
+          <CategoryCard
+            title="Must-have school supplies"
+            items={cardItems("books")}
+            href="/s?i=books"
+            cta="Shop for Back to School"
+          />
         </div>
-      </section>
 
-      <p className="mt-8 text-xs text-muted">
-        Next up: Phase 02 — Drizzle schema and a ~600 product seed. Blocked on a Neon
-        connection string. See <code>plan/PROGRESS.md</code>.
-      </p>
+        <div className="mt-4 space-y-4">
+          <ProductRail
+            title={recentlyViewed.length ? "Related to items you've viewed" : "Top rated in every department"}
+            products={viewed}
+            href="/s?sort=rating"
+          />
+
+          <ProductRail title="Today's deals" products={deals} href="/s?sort=featured" />
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <CategoryCard
+              title="Gear up to get fit"
+              items={cardItems("sports-outdoors")}
+              href="/s?i=sports-outdoors"
+              cta="Discover more"
+            />
+            <CategoryCard
+              title="Elevate your Electronics"
+              items={cardItems("electronics")}
+              href="/s?i=electronics"
+              cta="Discover more"
+            />
+            <CategoryCard
+              title="Finds for Home"
+              items={cardItems("home-kitchen", 8).slice(4)}
+              href="/s?i=home-kitchen"
+              cta="See more"
+            />
+            <CategoryCard
+              title="Level up your beauty routine"
+              items={cardItems("beauty", 8).slice(4)}
+              href="/s?i=beauty"
+              cta="Discover more"
+            />
+          </div>
+
+          <ProductRail title="More items to consider" products={newArrivals} href="/s?sort=newest" />
+
+          <ProductRail title="Books you may like" products={topBooks} href="/s?i=books" />
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <CategoryCard
+              title="Shop for your home essentials"
+              items={cardItems("home-kitchen", 12).slice(8)}
+              href="/s?i=home-kitchen"
+              cta="Discover more in Home"
+            />
+            <CategoryCard
+              title="Deals on top categories"
+              items={deals.slice(0, 4).map((product) => ({
+                product,
+                label: product.department.replace("-", " & "),
+              }))}
+              href="/s?sort=featured"
+              cta="See all deals"
+            />
+            <CategoryCard
+              title="Level up your PC here"
+              items={cardItems("computers")}
+              href="/s?i=computers"
+              cta="Discover more"
+            />
+            <CategoryCard
+              title="Most-loved travel essentials"
+              items={cardItems("clothing")}
+              href="/s?i=clothing"
+              cta="Discover more"
+            />
+          </div>
+
+          <ProductRail
+            title="Customers who viewed items in your browsing history also viewed"
+            products={topRated.slice(0, 16)}
+            variant="card"
+            href="/s?sort=rating"
+          />
+        </div>
+      </div>
     </main>
   );
 }
