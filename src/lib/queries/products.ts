@@ -26,6 +26,15 @@ export type Facets = {
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]/g, " ");
 
+/**
+ * Hard cap on how many terms one query may be scored against.
+ *
+ * Cost is O(terms x catalogue), and the did-you-mean path is O(terms x vocabulary).
+ * Without a cap, a single anonymous request with a long query buys an unbounded amount
+ * of our CPU — cheap for the sender, expensive and billable for us.
+ */
+const MAX_TERMS = 8;
+
 function bigrams(s: string): Set<string> {
   const out = new Set<string>();
   const t = ` ${s} `;
@@ -117,7 +126,9 @@ export type SearchResult = {
 };
 
 export function searchProducts(params: SearchParamsShape): SearchResult {
-  const terms = params.k ? norm(params.k).split(/\s+/).filter(Boolean) : [];
+  const terms = params.k
+    ? norm(params.k).split(/\s+/).filter(Boolean).slice(0, MAX_TERMS)
+    : [];
   const all = allProducts();
 
   const scores = new Map<string, number>();
@@ -195,13 +206,30 @@ function buildFacets(matched: Product[], params: SearchParamsShape): Facets {
   };
 }
 
+/**
+ * Vocabulary for the did-you-mean suggestion.
+ *
+ * Built once per process instead of once per query. It used to be rebuilt on every
+ * zero-result search — a full pass over the catalogue that an anonymous caller could
+ * trigger at will, simply by searching for something that does not exist.
+ */
+let vocabCache: string[] | null = null;
+
+function vocabulary(): string[] {
+  if (!vocabCache) {
+    const set = new Set<string>();
+    for (const p of allProducts()) {
+      for (const w of norm(p.title).split(" ")) if (w.length > 3) set.add(w);
+    }
+    vocabCache = [...set];
+  }
+  return vocabCache;
+}
+
 /** Nearest catalogue word to a failed query, used for "did you mean". */
 function suggest(query: string): string | null {
-  const vocab = new Set<string>();
-  for (const p of allProducts()) {
-    for (const w of norm(p.title).split(" ")) if (w.length > 3) vocab.add(w);
-  }
-  const q = norm(query).split(/\s+/).filter(Boolean);
+  const vocab = vocabulary();
+  const q = norm(query).split(/\s+/).filter(Boolean).slice(0, MAX_TERMS);
   const fixed = q.map((term) => {
     let best = term;
     let bestScore = 0.6;

@@ -131,3 +131,21 @@ $25 gift card renders as 23,00 €, ‏91.75 د.إ‏, ¥181.00 and PKR 6,950.
 Verified: the strip renders exactly Today's Deals, Customer Service, Coupons, Buy Again,
 Browsing History, Gift Cards — no department names — while the drawer still carries all
 nine and `/s?i=toys-games` still returns 200.
+
+## Security review — 2026-09-12
+
+Requested as an infosec pass. Secrets: clean, verified across the full history and the
+committed transcripts, not just the working tree. Three resource-abuse findings, all
+fixed and verified against a running server. Details in `SECURITY.md`.
+
+| Severity | Finding | Fix |
+|---|---|---|
+| High | `/_next/image` was an open, billable proxy — any caller could force unbounded fetch-and-transform work on our account, and a free tier answers overuse by suspending the project | Optimization off; endpoint now 404s. `remotePatterns` narrowed and kept as intent |
+| Medium | Did-you-mean rebuilt a catalogue-wide vocabulary on every zero-result query — an anonymous CPU amplifier | Vocabulary built once per process; queries capped at 8 terms |
+| Medium | `scrypt` ran on every sign-in attempt, so anyone could burn billable CPU in a loop | 10 attempts per IP per 5 minutes, checked before the hash. Verified: 11th is refused |
+| Low | Unknown emails skipped the hash and answered faster — a user-enumeration timing oracle | Unknown emails are hashed against a decoy so both paths do equal work |
+| Low | No security headers | nosniff, frame-ancestors none, HSTS, Referrer-Policy, Permissions-Policy limiting geolocation to self; X-Powered-By removed |
+
+Deliberately open, with reasons recorded: a full script-src CSP (needs nonces threaded
+through the framework bootstrap; the alternative is `unsafe-inline`, which is a policy
+in name only) and shared-store rate limiting (the in-memory counters are per-instance).

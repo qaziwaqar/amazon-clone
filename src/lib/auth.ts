@@ -103,10 +103,21 @@ export async function endSession() {
   store.delete(SESSION_COOKIE);
 }
 
+/**
+ * A salt and hash for an account that does not exist.
+ *
+ * Returning early for an unknown email skips the expensive hash, so an unknown address
+ * answers measurably faster than a known one — a timing oracle that lets someone
+ * enumerate which accounts exist. Hashing against this decoy keeps both paths doing
+ * the same work.
+ */
+const DECOY = hashPassword("account-that-does-not-exist");
+
 export function authenticate(email: string, password: string): User | null {
   const record = users.get(email.toLowerCase().trim());
-  if (!record) return null;
-  if (!verifyPassword(password, record.salt, record.hash)) return null;
+  const { salt, hash } = record ?? DECOY;
+  const ok = verifyPassword(password, salt, hash);
+  if (!record || !ok) return null;
   return { email: record.email, name: record.name };
 }
 

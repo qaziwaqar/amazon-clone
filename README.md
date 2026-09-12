@@ -272,7 +272,19 @@ matching what a Postgres `tsvector` would do, so result ordering stays stable.
 
 ---
 
-## 8. Repository layout
+## 8. Security
+
+No secrets are committed — verified against the full history, not just the working
+tree, and including `.agent-logs/`. `JWT_SECRET` has no hard-coded fallback, and the
+deploy script never prints or commits the value it generates.
+
+Three resource-abuse vectors were found and closed: the image optimizer was an open
+billable proxy, the did-you-mean path rebuilt a catalogue-wide vocabulary on every
+failed search, and password hashing could be driven in a loop by anyone.
+
+Full write-up, including what is deliberately left open and why: **[SECURITY.md](SECURITY.md)**.
+
+## 9. Repository layout
 
 ```
 src/app/          routes, server actions, middleware
@@ -282,6 +294,7 @@ src/lib/queries/  the data seam every page reads through
 plan/             phase plan, loop contract, progress ledger
 .agent-logs/      raw prompt/response capture for every session
 CAPTURE-TEST.md   proof the capture hook works
+SECURITY.md       secrets audit, abuse hardening, and known gaps
 ```
 
 `plan/LOOP.md` holds the build rules, including the two that shaped this repo: no

@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { limitAuthAttempt } from "@/lib/rate-limit";
 import {
   authenticate,
   DEMO_EMAIL,
@@ -26,6 +27,14 @@ export async function signIn(_prev: AuthState, form: FormData): Promise<AuthStat
 
   if (!email || !password) return { error: "Enter your email and password." };
 
+  // Before the hash, not after: the point is to avoid doing the expensive work.
+  const limit = await limitAuthAttempt();
+  if (!limit.allowed) {
+    return {
+      error: `Too many sign-in attempts. Try again in ${limit.retryAfterSeconds} seconds.`,
+    };
+  }
+
   const user = authenticate(email, password);
   // Deliberately generic: saying which half was wrong tells an attacker which emails exist.
   if (!user) return { error: "Your email or password is incorrect." };
@@ -46,6 +55,13 @@ export async function signUp(_prev: AuthState, form: FormData): Promise<AuthStat
   if (password.length < 8) {
     return { error: "Passwords must be at least 8 characters." };
   }
+  const limit = await limitAuthAttempt();
+  if (!limit.allowed) {
+    return {
+      error: `Too many attempts. Try again in ${limit.retryAfterSeconds} seconds.`,
+    };
+  }
+
   if (userExists(email)) {
     return { error: "An account already exists with that email address." };
   }
@@ -57,6 +73,9 @@ export async function signUp(_prev: AuthState, form: FormData): Promise<AuthStat
 }
 
 export async function signInAsDemo(next = "/") {
+  const limit = await limitAuthAttempt();
+  if (!limit.allowed) redirect("/signin");
+
   const user = authenticate(DEMO_EMAIL, DEMO_PASSWORD);
   if (user) await startSession(user);
   revalidatePath("/", "layout");
