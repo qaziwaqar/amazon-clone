@@ -1,6 +1,6 @@
 import { ProductImage } from "@/components/product-image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { getOrder, orderProgress } from "@/lib/orders";
 import { formatPrice } from "@/lib/utils";
@@ -14,7 +14,9 @@ export default async function ConfirmationPage({
 }) {
   const { orderId } = await params;
   const user = await getUser();
-  const order = await getOrder(orderId, user?.email ?? null);
+  if (!user) redirect(`/signin?next=/checkout/confirmation/${orderId}`);
+
+  const order = await getOrder(orderId, user.email);
   if (!order) notFound();
 
   const { eta } = orderProgress(order);

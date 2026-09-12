@@ -88,3 +88,14 @@ server, not against the markup.
 | 3 | "All" button inert, no drawer | Never built — deferred in Phase 03 | Slide-in panel, Escape and backdrop close, scroll lock |
 | 4 | Images did not match products | `picsum.photos` returns random photography | Keyword-matched `loremflickr` tags per product type, pinned per slot; generated tile as fallback when the host fails |
 | 5 | Delivery address not clickable | Static label | Picker with opt-in GPS, browser-side reverse geocoding, ZIP fallback |
+
+## Reported-issue pass 2 — 2026-09-12
+
+| # | Issue | Root cause | Fix |
+|---|---|---|---|
+| 6 | Checkout completed with no sign-in | `/checkout` was never added to the middleware matcher, and neither the page nor the action checked | Gated in middleware, re-verified on the page with `getUser()`, and enforced inside `placeOrder` — a server action is a public endpoint regardless of which page renders it. Cart CTA now reads "Sign in to checkout" |
+
+Verified over HTTP: signed out, `/checkout` and `/checkout/confirmation/*` both 307 to
+`/signin?next=…`, and a direct POST of the placement action is refused. Signed in as the
+demo account, the full path still completes — 303 to the confirmation page, thank-you
+rendered, and the new order listed on `/orders`.

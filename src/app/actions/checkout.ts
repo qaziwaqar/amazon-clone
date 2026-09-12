@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getCart } from "@/lib/cart";
+import { getUser } from "@/lib/auth";
 import { clearCart } from "@/app/actions/cart";
 import { appendOrder, SHIPPING, TAX_RATE } from "@/lib/orders";
 import type { Order } from "@/lib/data/types";
@@ -20,6 +21,11 @@ export async function placeOrder(
   _prev: CheckoutState,
   form: FormData,
 ): Promise<CheckoutState> {
+  // Server actions are reachable directly, so the route guard above them proves
+  // nothing. An unauthenticated caller is refused here, at the only place that counts.
+  const user = await getUser();
+  if (!user) redirect("/signin?next=/checkout");
+
   const cart = await getCart();
   if (cart.lines.length === 0) return { error: "Your cart is empty." };
 

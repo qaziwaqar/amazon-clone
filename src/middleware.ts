@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE } from "@/lib/constants";
 
-const PROTECTED = ["/orders", "/account"];
+const PROTECTED = ["/orders", "/account", "/checkout"];
 
 /**
  * Presence check only. The signature is verified server-side on every protected page
@@ -19,4 +19,6 @@ export function middleware(request: NextRequest) {
   return NextResponse.redirect(url);
 }
 
-export const config = { matcher: ["/orders/:path*", "/account/:path*"] };
+export const config = {
+  matcher: ["/orders/:path*", "/account/:path*", "/checkout/:path*"],
+};

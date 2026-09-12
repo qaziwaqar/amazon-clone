@@ -1,6 +1,7 @@
 import { ProductImage } from "@/components/product-image";
 import Link from "next/link";
 import { getCart } from "@/lib/cart";
+import { getUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { getBestSellers } from "@/lib/queries/products";
@@ -13,7 +14,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 export const metadata = { title: "Shopping Cart" };
 
 export default async function CartPage() {
-  const cart = await getCart();
+  const [cart, user] = await Promise.all([getCart(), getUser()]);
 
   return (
     <main id="main" className="mx-auto w-full max-w-[1500px] px-4 py-4">
@@ -121,12 +122,19 @@ export default async function CartPage() {
               <span className="font-bold">{formatPrice(cart.subtotalCents)}</span>
             </p>
 
+            {/* Checkout requires an account, so say so here rather than bouncing
+                someone to a sign-in page they did not expect. */}
             <Link
-              href="/checkout"
+              href={user ? "/checkout" : "/signin?next=/checkout"}
               className="mt-4 block rounded-full border border-cta-border bg-cta py-2 text-center text-sm hover:bg-cta-hover"
             >
-              Proceed to checkout
+              {user ? "Proceed to checkout" : "Sign in to checkout"}
             </Link>
+            {!user && (
+              <p className="mt-2 text-center text-xs text-muted">
+                Your cart is kept while you sign in.
+              </p>
+            )}
           </aside>
         </div>
       )}

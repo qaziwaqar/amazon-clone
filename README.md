@@ -20,6 +20,9 @@ Open <http://localhost:3000>.
 
 Requires Node 20 or newer.
 
+Browsing, search and the cart are open to everyone. **Checkout requires an account**,
+as on the real site — the cart is kept while you sign in.
+
 **Sign in with the demo account** — there is a one-click button on `/signin`, or type:
 
 | | |
@@ -95,7 +98,7 @@ that sleep after inactivity: a 50-second cold start makes the site look broken.
 | `/dp/[slug]` | Gallery with lens zoom, variants, buy box, specs, reviews with histogram, related items |
 | `/cart` | Quantity, remove, save for later, free-shipping progress |
 | `/signin`, `/signup` | Email + password, one-click demo login |
-| `/checkout` | Address, delivery speed, simulated payment, order review — no field is pre-filled |
+| `/checkout` | **Requires sign-in.** Address, delivery speed, simulated payment, order review — no field is pre-filled |
 | `/orders`, `/orders/[id]` | Order history, delivery progress, buy again |
 | `/account` | Account hub |
 
@@ -120,6 +123,9 @@ Stated plainly rather than buried:
   Nothing is charged, stored or transmitted.
 - **Accounts live in server memory.** Sign-up works and signs you in immediately, but
   accounts do not survive a restart. The demo account is always present.
+- **There is no guest checkout**, matching amazon.com. `/checkout`, `/orders` and
+  `/account` are gated in middleware, re-verified on the page, and — because a server
+  action is a public endpoint in its own right — inside the order-placement action too.
 - **Cart and orders live in httpOnly cookies.** They survive reloads and redeploys.
   Orders are capped at the six most recent.
 - **Checkout pre-fills nothing**, including the card field. Any Luhn-valid test number

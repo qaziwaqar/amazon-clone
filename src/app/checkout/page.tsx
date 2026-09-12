@@ -1,6 +1,8 @@
 import { ProductImage } from "@/components/product-image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getCart } from "@/lib/cart";
+import { getUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils";
 import { TAX_RATE } from "@/lib/orders";
 import { CheckoutForm } from "@/components/checkout/checkout-form";
@@ -9,6 +11,11 @@ import { EmptyState } from "@/components/ui/empty-state";
 export const metadata = { title: "Checkout" };
 
 export default async function CheckoutPage() {
+  // Middleware only checks that a session cookie exists; it runs on the edge without
+  // the signing key. This is where a forged cookie actually gets rejected.
+  const user = await getUser();
+  if (!user) redirect("/signin?next=/checkout");
+
   const cart = await getCart();
 
   if (cart.lines.length === 0) {

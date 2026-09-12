@@ -44,3 +44,22 @@ Real payment processing, address autocomplete, gift options, split shipments.
 Never trust a client-sent price, quantity, or total. Re-read every line item from the DB
 inside the placement transaction. Card numbers are validated and discarded — never stored,
 never logged, not even last-four unless it is generated locally.
+
+## Correction — sign-in gate
+
+Checkout shipped reachable while signed out: an order could be placed with no account
+at all. `/checkout` was simply missing from the middleware matcher, and nothing else
+checked.
+
+Fixed at three levels, because each one alone is insufficient:
+
+1. **Middleware** — `/checkout/:path*` added, redirecting to `/signin?next=…`. Cheap,
+   and catches the common case before any rendering.
+2. **The page** — `getUser()` verifies the cookie signature. Middleware runs on the
+   edge without the signing key, so it can only check that *a* cookie exists.
+3. **The action** — `placeOrder` refuses an unauthenticated caller. A server action is
+   a public endpoint; gating the page that renders it proves nothing about who can POST
+   to it.
+
+The cart page now says "Sign in to checkout" when signed out rather than bouncing
+someone off an unexpected redirect, and states that the cart is kept.
